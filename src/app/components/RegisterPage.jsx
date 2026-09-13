@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./register.module.css";
 import { useAuth } from "./AuthProvider";
 import GoogleSignIn from "./GoogleSignIn";
@@ -24,6 +24,43 @@ export default function RegisterPage() {
   const [formError, setFormError] = useState("");
   const [submitState, setSubmitState] = useState("idle");
   const [registration, setRegistration] = useState(null);
+  const [isFetchingStatus, setIsFetchingStatus] = useState(true);
+
+  // Fetch existing registration status when the user logs in
+  useEffect(() => {
+    if (!authToken) {
+      setIsFetchingStatus(false);
+      return;
+    }
+
+    let isMounted = true;
+    
+    async function fetchStatus() {
+      try {
+        const response = await fetch(getApiUrl("/registrations/me"), {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.status !== "EXPIRED") {
+            // If they have an active draft or are already paid, skip the form
+            if (isMounted) {
+              setRegistration(data);
+              setSubmitState("created");
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch registration status:", err);
+      } finally {
+        if (isMounted) setIsFetchingStatus(false);
+      }
+    }
+
+    fetchStatus();
+    return () => { isMounted = false; };
+  }, [authToken]);
 
   const addMember = () => {
     if (members.length < 3)
@@ -122,7 +159,7 @@ export default function RegisterPage() {
     }
   };
 
-  if (status === "loading") {
+  if (status === "loading" || isFetchingStatus) {
     return (
       <main className={styles.page}>
         <div className={styles.grid} />
