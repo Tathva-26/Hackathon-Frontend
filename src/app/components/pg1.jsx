@@ -1,10 +1,6 @@
 "use client";
 
 export default function Pg1() {
-  const handleSignup = () => {
-    window.location.href = "#register";
-  };
-
   return (
     <main className="hero">
       <div className="grid"></div>
@@ -13,16 +9,6 @@ export default function Pg1() {
       <img src="/assets/hand-right.png" className="decor decor-right" alt="" />
       <img src="/assets/atom.png" className="decor decor-top-right" alt="" />
       <img src="/assets/whatsapp-graphic.jpg" className="decor decor-bottom" alt="" />
-
-      <header className="navbar">
-        <a href="#" className="logo">
-          <img src="/assets/tathva.png" alt="Tathva '26 NIT Calicut" />
-        </a>
-
-        <button className="signup-btn" onClick={handleSignup}>
-          Sign Up
-        </button>
-      </header>
 
       <section className="hero-content">
         <p className="presents">PRESENTS</p>
