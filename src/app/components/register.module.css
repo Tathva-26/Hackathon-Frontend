@@ -1,7 +1,9 @@
 .page {
+  height: 100svh;
   min-height: 100svh;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: #080808;
   padding: 10rem clamp(1.25rem, 6vw, 7rem) 5rem;
 }

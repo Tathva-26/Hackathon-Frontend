@@ -12,18 +12,19 @@ export function getApiBase() {
   return base.replace(/\/$/, "");
 }
 
-// POST /api/auth/google lives one level above the versioned /api/v1 base:
-//   http://localhost:8080/api/v1  ->  http://localhost:8080/api/auth/google
-export function getGoogleAuthUrl() {
+// Backend serves every route under a versioned prefix (/api/v1).
+// Accept both ".../api" and ".../api/v1" base URLs and normalize them.
+export function getVersionedBase() {
   const base = getApiBase();
-  const authBase = base.replace(/\/api\/v1\/?$/, "/api");
-  return `${authBase.replace(/\/$/, "")}/auth/google`;
+  return /\/v\d+\/?$/.test(base) ? base : `${base}/v1`;
+}
+
+export function getGoogleAuthUrl() {
+  return `${getVersionedBase()}/auth/google`;
 }
 
 export function getSessionUrl() {
-  const base = getApiBase();
-  const authBase = base.replace(/\/api\/v1\/?$/, "/api");
-  return `${authBase.replace(/\/$/, "")}/auth/me`;
+  return `${getVersionedBase()}/auth/me`;
 }
 
 export function loadSession() {
@@ -53,7 +54,7 @@ export async function exchangeGoogleCredential(credential) {
   const res = await fetch(getGoogleAuthUrl(), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ credential }),
+    body: JSON.stringify({ token: credential }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.token || !data.user) {
@@ -71,6 +72,14 @@ export async function fetchSessionUser(token) {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Session expired");
-  const data = await res.json();
-  return data.user;
+  return res.json();
+}
+
+// GET /api/v1/registrations/me - the leader's current team details.
+export async function fetchMyRegistration(token) {
+  const res = await fetch(`${getVersionedBase()}/registrations/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Could not load registration status");
+  return res.json();
 }

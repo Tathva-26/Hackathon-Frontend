@@ -1,18 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./register.module.css";
 import { useAuth } from "./AuthProvider";
 import GoogleSignIn from "./GoogleSignIn";
-import { getApiBase } from "../lib/auth";
+import { fetchMyRegistration, getVersionedBase } from "../lib/auth";
 
 const emptyMember = { name: "", email: "", phone: "" };
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 function getApiUrl(path) {
-  const base = getApiBase();
-  return `${base.replace(/\/$/, "")}${path}`;
+  return `${getVersionedBase()}${path}`;
 }
 
 export default function RegisterPage() {
@@ -24,6 +23,27 @@ export default function RegisterPage() {
   const [formError, setFormError] = useState("");
   const [submitState, setSubmitState] = useState("idle");
   const [registration, setRegistration] = useState(null);
+  const [regInfo, setRegInfo] = useState({ fetchedFor: "", loaded: false, registered: false, data: null });
+  const [showEditor, setShowEditor] = useState(false);
+
+  // Load the leader's current team so they can view it or register another.
+  useEffect(() => {
+    if (status !== "authenticated" || !authToken) return;
+    let cancelled = false;
+    fetchMyRegistration(authToken)
+      .then((data) => {
+        if (cancelled) return;
+        const registered = Boolean(data.registered && data.status);
+        setRegInfo({ fetchedFor: authToken, loaded: true, registered, data: registered ? data : null });
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setRegInfo({ fetchedFor: authToken, loaded: true, registered: false, data: null });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [status, authToken]);
 
   const addMember = () => {
     if (members.length < 3)
@@ -169,20 +189,104 @@ export default function RegisterPage() {
     );
   }
 
+  if (!regInfo.loaded || regInfo.fetchedFor !== authToken) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.grid} />
+        <p className={styles.loading}>CHECKING REGISTRATION...</p>
+      </main>
+    );
+  }
+
+  const statusLabel =
+    {
+      DRAFT: "DRAFT",
+      PAYMENT_PENDING: "AWAITING PAYMENT",
+      PAID: "PAID",
+    }[regInfo.data?.status] || regInfo.data?.status || "";
+
+  if (regInfo.registered && !showEditor) {
+    const reg = regInfo.data;
+    return (
+      <main className={styles.page}>
+        <div className={styles.grid} />
+        <section className={styles.authPanel}>
+          <p className={styles.eyebrow}>TATHVA PRESENTS</p>
+          <h1 className={styles.authTitle}>
+            YOUR
+            <br />
+            <span>TEAM.</span>
+          </h1>
+          <p className={styles.authCopy}>
+            {"Here is your current team. You can register another team if you'd like."}
+          </p>
+          <div className={styles.orderDetails}>
+            <div>
+              <span>TEAM</span>
+              <strong>{reg.teamName}</strong>
+            </div>
+            <div>
+              <span>COLLEGE</span>
+              <strong>{reg.collegeName}</strong>
+            </div>
+            <div>
+              <span>MEMBERS</span>
+              <strong>{reg.memberCount}</strong>
+            </div>
+            <div>
+              <span>STATUS</span>
+              <strong>{statusLabel}</strong>
+            </div>
+            <div>
+              <span>FEE</span>
+              <strong>₹{Math.round(reg.amount / 100)}</strong>
+            </div>
+          </div>
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={() => setShowEditor(true)}
+          >
+            REGISTER ANOTHER TEAM <span>↗</span>
+          </button>
+          <div style={{ marginTop: 24 }}>
+            <button
+              type="button"
+              onClick={logout}
+              style={{
+                background: "transparent",
+                border: "1px solid #555",
+                color: "#aaa",
+                padding: "8px 12px",
+                cursor: "pointer",
+                fontSize: 11,
+                letterSpacing: 1,
+              }}
+            >
+              SIGN OUT ({currentUser.email})
+            </button>
+          </div>
+          <Link href="/" className={styles.backLink}>
+            ← BACK TO HOME
+          </Link>
+        </section>
+      </main>
+    );
+  }
+
   if (submitState === "created") {
     return (
       <main className={styles.page}>
         <div className={styles.grid} />
         <section className={styles.successPanel}>
-          <p className={styles.eyebrow}>ORDER CREATED</p>
+          <p className={styles.eyebrow}>REGISTRATION SAVED</p>
           <h1 className={styles.successTitle}>
             TEAM
             <br />
             <span>LOCKED IN.</span>
           </h1>
           <p className={styles.authCopy}>
-            Your team details are saved. Continue with the secure payment step
-            to complete registration.
+            {"Your team details are saved as a draft. You'll be notified when the payment window opens to confirm your spot."}
           </p>
           <div className={styles.orderDetails}>
             <div>
@@ -246,6 +350,24 @@ export default function RegisterPage() {
           >
             SIGN OUT ({currentUser.email})
           </button>
+          {regInfo.registered && showEditor && (
+            <button
+              type="button"
+              onClick={() => setShowEditor(false)}
+              style={{
+                marginTop: 8,
+                background: "transparent",
+                border: "1px solid #444",
+                color: "#888",
+                padding: "8px 12px",
+                cursor: "pointer",
+                fontSize: 11,
+                letterSpacing: 1,
+              }}
+            >
+              VIEW CURRENT TEAM
+            </button>
+          )}
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
