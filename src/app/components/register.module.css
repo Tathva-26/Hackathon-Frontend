@@ -1,0 +1,395 @@
+.page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  background: #080808;
+  padding: 10rem clamp(1.25rem, 6vw, 7rem) 5rem;
+}
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+  pointer-events: none;
+}
+.atom {
+  position: absolute;
+  top: 12rem;
+  right: 6%;
+  width: clamp(6rem, 12vw, 11rem);
+  opacity: 0.18;
+  pointer-events: none;
+}
+.content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.7fr) minmax(20rem, 1.3fr);
+  gap: clamp(3rem, 8vw, 10rem);
+  max-width: 82rem;
+  margin: 0 auto;
+}
+.intro {
+  padding-top: 2rem;
+}
+.eyebrow,
+.formHeader,
+.step,
+.leaderCard em,
+.orderDetails span {
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+}
+.eyebrow {
+  color: #bdbdbd;
+  margin: 0 0 1.5rem;
+}
+.intro h1,
+.authTitle,
+.successTitle {
+  margin: 0;
+  color: #fff;
+  font-family: "Anton", sans-serif;
+  font-size: clamp(4.5rem, 9vw, 8.5rem);
+  font-weight: 400;
+  line-height: 0.82;
+  letter-spacing: 0.02em;
+}
+.intro h1 span,
+.authTitle span,
+.successTitle span {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.7);
+}
+.introCopy,
+.authCopy {
+  color: #a0a0a0;
+  line-height: 1.7;
+  margin: 2rem 0;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #fff;
+  margin-top: 6rem;
+}
+.step i {
+  width: 3.5rem;
+  height: 1px;
+  background: #fff;
+  display: block;
+}
+.step span:first-child {
+  color: #707070;
+}
+.form {
+  width: 100%;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(12, 12, 12, 0.8);
+  box-shadow: 1rem 1rem 0 rgba(255, 255, 255, 0.04);
+}
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  padding-bottom: 1rem;
+  margin: 0 0 1.5rem;
+}
+.formHeader b {
+  color: #707070;
+  font-size: 0.55rem;
+  font-weight: 400;
+}
+.formHeader small {
+  color: #888;
+  font-size: 0.55rem;
+}
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  color: #979797;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  margin-bottom: 1.25rem;
+}
+.form input {
+  width: 100%;
+  border: 1px solid #393939;
+  background: #111;
+  color: #fff;
+  padding: 0.95rem 1rem;
+  outline: none;
+  font:
+    500 1rem "Inter",
+    sans-serif;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.form input:focus {
+  border-color: #fff;
+  background: #181818;
+}
+.form input::placeholder {
+  color: #5f5f5f;
+}
+.leaderCard {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border: 1px solid #393939;
+  padding: 0.8rem;
+  margin-bottom: 1.25rem;
+  background: #111;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid #777;
+  color: #fff;
+  font:
+    1rem "Press Start 2P",
+    monospace;
+}
+.leaderCard div:nth-child(2) {
+  display: grid;
+  gap: 0.3rem;
+  flex: 1;
+}
+.leaderCard strong {
+  font-size: 0.95rem;
+}
+.leaderCard span {
+  color: #888;
+  font-size: 0.75rem;
+}
+.leaderCard em {
+  color: #fff;
+  font-style: normal;
+  font-size: 0.48rem;
+}
+.memberCard {
+  border: 1px solid #393939;
+  padding: 1rem;
+  margin: 0 0 1rem;
+}
+.memberCard legend {
+  padding: 0 0.5rem;
+  color: #fff;
+  font:
+    0.6rem "Press Start 2P",
+    monospace;
+}
+.memberCard legend button {
+  color: #888;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font:
+    0.5rem "Press Start 2P",
+    monospace;
+  margin-left: 1rem;
+}
+.memberCard legend button:hover {
+  color: #fff;
+}
+.memberCard label:last-child {
+  margin-bottom: 0;
+}
+.addButton {
+  width: 100%;
+  border: 1px dashed #555;
+  background: transparent;
+  color: #fff;
+  padding: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  font:
+    0.65rem "Press Start 2P",
+    monospace;
+}
+.addButton span {
+  float: right;
+  color: #777;
+  font-size: 0.5rem;
+}
+.addButton:hover {
+  border-color: #fff;
+}
+.error {
+  color: #ff8c8c;
+  border-left: 2px solid #ff8c8c;
+  padding-left: 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 1.5rem 0 0;
+}
+.submitRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.submitRow p {
+  color: #777;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.submitButton,
+.primaryButton {
+  border: 1px solid #fff;
+  background: #fff;
+  color: #000;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  font:
+    600 0.7rem "Press Start 2P",
+    monospace;
+  text-decoration: none;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.submitButton:hover,
+.primaryButton:hover {
+  background: #ddd;
+  transform: translateY(-2px);
+}
+.submitButton:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.loading {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding-top: 30vh;
+  color: #aaa;
+  font:
+    0.7rem "Press Start 2P",
+    monospace;
+}
+.authPanel,
+.successPanel {
+  position: relative;
+  z-index: 1;
+  max-width: 42rem;
+  margin: 5rem auto;
+}
+.authCopy {
+  max-width: 28rem;
+}
+.primaryButton {
+  display: inline-block;
+  margin-top: 1rem;
+}
+.primaryButton span {
+  margin-left: 1.5rem;
+  font-size: 1rem;
+}
+.googleButton {
+  min-height: 44px;
+  margin-top: 1rem;
+}
+.backLink {
+  display: block;
+  color: #888;
+  margin-top: 2rem;
+  font:
+    0.6rem "Press Start 2P",
+    monospace;
+  text-decoration: none;
+}
+.backLink:hover {
+  color: #fff;
+}
+.successTitle {
+  margin-bottom: 1.5rem;
+}
+.orderDetails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  border-block: 1px solid #333;
+  padding: 1.25rem 0;
+  margin: 2rem 0;
+}
+.orderDetails div {
+  display: grid;
+  gap: 0.7rem;
+}
+.orderDetails span {
+  color: #777;
+  font-size: 0.5rem;
+}
+.orderDetails strong {
+  color: #fff;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 800px) {
+  .page {
+    padding-top: 8rem;
+  }
+  .content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .intro {
+    padding-top: 0;
+  }
+  .intro h1 {
+    font-size: clamp(4rem, 18vw, 7rem);
+  }
+  .step {
+    margin-top: 3rem;
+  }
+  .form {
+    padding: 1.25rem;
+  }
+  .orderDetails {
+    grid-template-columns: 1fr;
+  }
+  .authTitle,
+  .successTitle {
+    font-size: clamp(4rem, 18vw, 7rem);
+  }
+}
+@media (max-width: 480px) {
+  .submitRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .submitButton {
+    width: 100%;
+  }
+  .leaderCard {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .leaderCard em {
+    width: 100%;
+    margin-left: 3.25rem;
+  }
+  .formHeader {
+    gap: 1rem;
+  }
+  .formHeader b {
+    text-align: right;
+  }
+}

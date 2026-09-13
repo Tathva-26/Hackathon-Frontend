@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleSignup = () => {
-    window.location.href = "#register";
+    router.push("/register");
   };
 
   const isHome = pathname === "/";
@@ -38,21 +40,37 @@ export default function Navbar() {
   return (
     <header className="navbar navbar-inner">
       <Link href="/" className="logo-brand">
-        <img src="/assets/tathva.png" alt="Tathva '26 NIT Calicut" className="logo-img" />
+        <img
+          src="/assets/tathva.png"
+          alt="Tathva '26 NIT Calicut"
+          className="logo-img"
+        />
         <span className="brand-title">TatHack &apos;26</span>
       </Link>
 
       <nav className="nav-actions" aria-label="Event navigation">
-        <Link href="/prizes" className={isPrizesActive ? "nav-link active" : "nav-link"}>
+        <Link
+          href="/prizes"
+          className={isPrizesActive ? "nav-link active" : "nav-link"}
+        >
           Prizes
         </Link>
-        <Link href="/sponsors" className={pathname === "/sponsors" ? "nav-link active" : "nav-link"}>
+        <Link
+          href="/sponsors"
+          className={pathname === "/sponsors" ? "nav-link active" : "nav-link"}
+        >
           Sponsors
         </Link>
-        <Link href="/rules" className={pathname === "/rules" ? "nav-link active" : "nav-link"}>
+        <Link
+          href="/rules"
+          className={pathname === "/rules" ? "nav-link active" : "nav-link"}
+        >
           Rules
         </Link>
-        <Link href="/faq" className={pathname === "/faq" ? "nav-link active" : "nav-link"}>
+        <Link
+          href="/faq"
+          className={pathname === "/faq" ? "nav-link active" : "nav-link"}
+        >
           FAQ
         </Link>
         <button className="signup-btn" onClick={handleSignup}>
