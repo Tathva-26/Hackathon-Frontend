@@ -152,10 +152,15 @@ export default function RegisterPage() {
             </div>
           ) : (
             <p className={styles.error} role="alert">
-              Google sign-in is not configured. Add NEXT_PUBLIC_GOOGLE_CLIENT_ID to the frontend environment and restart `npm run dev`.
+              Google sign-in is not configured. Add NEXT_PUBLIC_GOOGLE_CLIENT_ID
+              to the frontend environment and restart `npm run dev`.
             </p>
           )}
-          {formError && <p className={styles.error} role="alert">{formError}</p>}
+          {formError && (
+            <p className={styles.error} role="alert">
+              {formError}
+            </p>
+          )}
           <Link href="/" className={styles.backLink}>
             ← BACK TO HOME
           </Link>
@@ -228,7 +233,16 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={logout}
-            style={{ marginTop: 24, background: "transparent", border: "1px solid #555", color: "#aaa", padding: "8px 12px", cursor: "pointer", fontSize: 11, letterSpacing: 1 }}
+            style={{
+              marginTop: 24,
+              background: "transparent",
+              border: "1px solid #555",
+              color: "#aaa",
+              padding: "8px 12px",
+              cursor: "pointer",
+              fontSize: 11,
+              letterSpacing: 1,
+            }}
           >
             SIGN OUT ({currentUser.email})
           </button>
