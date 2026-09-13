@@ -117,18 +117,25 @@ body {
     NAVBAR — logo centered top, actions pinned top-right
 ========================= */
 
-.navbar {
+/* =========================
+    NAVBAR — Home vs Inner Pages
+========================= */
+
+/* Landing Page Navbar (Original Exact Layout) */
+.navbar-home {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 150px;
-    z-index: 10;
+    height: 140px;
+    z-index: 20;
+    display: block;
+    padding: 0;
 }
 
 .logo {
     position: absolute;
-    top: 30px;
+    top: 24px;
     left: 50%;
     transform: translateX(-50%);
     display: block;
@@ -140,13 +147,68 @@ body {
     object-fit: contain;
 }
 
-.nav-actions {
+.navbar-home .nav-actions {
     position: absolute;
-    top: 32px;
+    top: 28px;
     right: 5.5%;
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 24px;
+}
+
+/* Inner Pages Navbar (Prizes Page Layout - Uniform Positioning) */
+.navbar-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 8px 2.5%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    z-index: 20;
+}
+
+.logo-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-decoration: none;
+    gap: 0px;
+    margin-top: -6px;
+    transition: transform 0.2s ease;
+}
+
+.logo-brand:hover {
+    transform: translateY(-1px);
+}
+
+.logo-img {
+    height: 90px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: -10px;
+}
+
+.brand-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    margin-top: -6px;
+}
+
+.navbar-inner .nav-actions {
+    position: relative;
+    top: auto;
+    right: auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 20px;
 }
 
 .nav-actions a {
@@ -242,9 +304,12 @@ body {
 ========================= */
 
 @media (max-width: 900px) {
+    .navbar-home { height: 110px; }
     .logo img { height: 50px; }
+    .logo-img { height: 68px; }
+    .brand-title { font-size: 14px; }
     .nav-actions { gap: 14px; }
-    .nav-actions a { font-size: 12px; }
+    .nav-actions a { font-size: 14px; }
     .signup-btn { padding: 8px 20px; font-size: 14px; }
     .presents { font-size: 12px; margin-bottom: 50px; }
     .title { gap: 12px; margin-bottom: 36px; }
@@ -254,12 +319,225 @@ body {
 }
 
 @media (max-width: 480px) {
-    .navbar { height: 110px; }
+    .navbar-home { height: 110px; }
     .logo img { height: 38px; }
-    .nav-actions { top: 72px; right: 50%; transform: translateX(50%); gap: 12px; }
-    .nav-actions a { font-size: 11px; }
+    .navbar-home .nav-actions { top: 72px; right: 50%; transform: translateX(50%); gap: 12px; }
+    .navbar-inner { padding: 15px 4%; flex-direction: column; gap: 16px; align-items: center; }
+    .logo-brand { align-items: center; }
+    .logo-img { height: 50px; }
+    .brand-title { font-size: 12px; }
+    .nav-actions { gap: 10px; }
+    .nav-actions a { font-size: 12px; }
     .signup-btn { padding: 6px 16px; font-size: 12px; }
     .presents { font-size: 10px; letter-spacing: 0.25em; margin-bottom: 30px; }
     .title { font-size: 30px; gap: 8px; margin-bottom: 24px; }
     .date { font-size: 16px; }
 }
+
+/* =========================
+   PAGE TRANSITION & NAVIGATION
+========================= */
+
+.page-transition {
+  animation: pageFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-link.active {
+  font-weight: 700;
+  color: #ffffff !important;
+}
+
+/* =========================
+   PRIZE PAGE STYLES
+========================= */
+
+.prize-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 750px;
+  background: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px 40px 20px;
+}
+
+.prize-card-container {
+  position: relative;
+  width: 100%;
+  max-width: 1050px;
+  min-height: 580px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  background: transparent; /* Grid lines visible in middle part */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px 50px 40px;
+  margin: auto;
+  z-index: 5;
+}
+
+/* Top Center Prize Badge */
+.prize-pill-badge {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  color: #000000;
+  padding: 10px 40px;
+  border-radius: 9999px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
+  z-index: 10;
+  user-select: none;
+}
+
+/* Top Right Ring & Vector */
+.prize-ring-wrapper {
+  position: absolute;
+  top: 30px;
+  right: 35px;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.prize-ring-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: spinRing 20s linear infinite;
+}
+
+.prize-vector-star {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+}
+
+@keyframes spinRing {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Main Podium Graphic */
+.prize-podium-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.prize-podium-img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.7));
+  transition: transform 0.4s ease;
+}
+
+.prize-podium-img:hover {
+  transform: scale(1.02);
+}
+
+/* Bottom Left Text */
+.prize-bottom-info {
+  position: absolute;
+  bottom: 30px;
+  left: 35px;
+  max-width: 320px;
+  text-align: left;
+}
+
+.prize-bottom-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #ffffff;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+
+.prize-bottom-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive adjustments for Prize Page */
+@media (max-width: 900px) {
+  .prize-card-container {
+    max-width: 95%;
+    min-height: auto;
+    padding: 70px 20px 140px 20px;
+  }
+  .prize-pill-badge {
+    font-size: 16px;
+    padding: 10px 32px;
+    top: 0;
+  }
+  .prize-ring-wrapper {
+    top: 20px;
+    right: 20px;
+    width: 75px;
+    height: 75px;
+  }
+  .prize-vector-star {
+    width: 32px;
+    height: 32px;
+  }
+  .prize-podium-img {
+    max-width: 100%;
+  }
+  .prize-bottom-info {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    max-width: 100%;
+    margin-top: 30px;
+    text-align: center;
+  }
+}
+

@@ -2,7 +2,7 @@
 
 export default function Pg1() {
   return (
-    <main className="hero">
+    <main className="hero page-transition">
       <div className="grid"></div>
 
       <img src="/assets/hand-left.png" className="decor decor-left" alt="" />
