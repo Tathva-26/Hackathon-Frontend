@@ -5,14 +5,13 @@ import { useState } from "react";
 import styles from "./register.module.css";
 import { useAuth } from "./AuthProvider";
 import GoogleSignIn from "./GoogleSignIn";
-import { getApiBase } from "../lib/auth";
+import { getVersionedBase } from "../lib/auth";
 
 const emptyMember = { name: "", email: "", phone: "" };
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 function getApiUrl(path) {
-  const base = getApiBase();
-  return `${base.replace(/\/$/, "")}${path}`;
+  return `${getVersionedBase()}${path}`;
 }
 
 export default function RegisterPage() {
@@ -174,15 +173,15 @@ export default function RegisterPage() {
       <main className={styles.page}>
         <div className={styles.grid} />
         <section className={styles.successPanel}>
-          <p className={styles.eyebrow}>ORDER CREATED</p>
+          <p className={styles.eyebrow}>REGISTRATION SAVED</p>
           <h1 className={styles.successTitle}>
             TEAM
             <br />
             <span>LOCKED IN.</span>
           </h1>
           <p className={styles.authCopy}>
-            Your team details are saved. Continue with the secure payment step
-            to complete registration.
+            Your team details are saved as a draft. You'll be notified when the
+            payment window opens to confirm your spot.
           </p>
           <div className={styles.orderDetails}>
             <div>
