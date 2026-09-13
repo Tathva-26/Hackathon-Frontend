@@ -74,3 +74,12 @@ export async function fetchSessionUser(token) {
   if (!res.ok) throw new Error("Session expired");
   return res.json();
 }
+
+// GET /api/v1/registrations/me - the leader's current team details.
+export async function fetchMyRegistration(token) {
+  const res = await fetch(`${getVersionedBase()}/registrations/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Could not load registration status");
+  return res.json();
+}
