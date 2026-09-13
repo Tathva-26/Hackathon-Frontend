@@ -102,6 +102,33 @@ body {
     z-index: 1;
     /* transform: rotate(25deg); */
 }
+
+.hand-glow {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1; /* sits behind the hand (z-index: 2) but above the grid */
+    border-radius: 50%;
+    filter: blur(40px);
+}
+
+.glow-left {
+    width: 600px;
+    height: 600px;
+    left: -250px;
+    top: -120px;
+    background: radial-gradient(circle, rgba(255,255,255,0.35) 10%, rgba(255,255,255,0) 50%);
+    opacity:0.6;
+}
+
+.glow-right {
+    width: 600px;
+    height: 600px;
+    right: -250px;
+    bottom: -90px;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0) 50%);
+    opacity:0.3;
+}
+
 body {
     position: relative;
     min-height: 100vh;
