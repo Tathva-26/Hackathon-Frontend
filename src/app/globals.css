@@ -102,7 +102,10 @@ body {
     z-index: 1;
     /* transform: rotate(25deg); */
 }
-
+body {
+    position: relative;
+    min-height: 100vh;
+}
 /* WhatsApp/bottom graphic — faint, lower-left, sits behind the hands */
 .decor-bottom {
     width: 38vw;
@@ -135,7 +138,7 @@ body {
 }
 
 .logo img {
-    height: 200px;
+    height: 150px;
     width: auto;
     object-fit: contain;
 }

@@ -3,12 +3,8 @@
 export default function Pg1() {
   return (
     <main className="hero">
-      <div className="grid"></div>
-
       <img src="/assets/hand-left.png" className="decor decor-left" alt="" />
       <img src="/assets/hand-right.png" className="decor decor-right" alt="" />
-      <img src="/assets/atom.png" className="decor decor-top-right" alt="" />
-      <img src="/assets/whatsapp-graphic.jpg" className="decor decor-bottom" alt="" />
 
       <section className="hero-content">
         <p className="presents">PRESENTS</p>
