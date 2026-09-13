@@ -27,7 +27,7 @@ export default function Navbar() {
           <Link href="/rules">Rules</Link>
           <Link href="/faq">FAQ</Link>
           <button className="signup-btn" onClick={handleSignup}>
-            Sign Up
+            Register
           </button>
         </nav>
       </header>
@@ -56,7 +56,7 @@ export default function Navbar() {
           FAQ
         </Link>
         <button className="signup-btn" onClick={handleSignup}>
-          Sign Up
+          Register
         </button>
       </nav>
     </header>
