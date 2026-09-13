@@ -10,6 +10,12 @@ export default function Pg1() {
       <img src="/assets/atom.png" className="decor decor-top-right" alt="" />
       <img src="/assets/whatsapp-graphic.jpg" className="decor decor-bottom" alt="" />
 
+      <header className="navbar">
+        <a href="#" className="logo" aria-label="Tathva '26 home">
+          <img src="/assets/tathva.png" alt="Tathva '26 NIT Calicut" />
+        </a>
+      </header>
+
       <section className="hero-content">
         <p className="presents">PRESENTS</p>
 
