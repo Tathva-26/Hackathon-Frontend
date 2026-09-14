@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-export default function Navbar() {
+export default function Navbar({ variant } = {}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -12,17 +12,13 @@ export default function Navbar() {
     router.push("/register");
   };
 
-  const isHome = pathname === "/";
+  // variant lets a caller force "home" or "inner" layout regardless of route
+  const isHome = variant ? variant === "home" : pathname === "/";
   const isPrizesActive = pathname === "/prizes" || pathname === "/prize";
 
   if (isHome) {
-    // Original Landing Page Navbar
     return (
       <header className="navbar navbar-home">
-        <Link href="/" className="logo">
-          <img src="/assets/tathva.png" alt="Tathva '26 NIT Calicut" />
-        </Link>
-
         <nav className="nav-actions" aria-label="Event navigation">
           <Link href="/prizes">Prizes</Link>
           <Link href="/sponsors">Sponsors</Link>
@@ -36,7 +32,6 @@ export default function Navbar() {
     );
   }
 
-  // Inner Pages (e.g. Prize Page) Navbar
   return (
     <header className="navbar navbar-inner">
       <Link href="/" className="logo-brand">
