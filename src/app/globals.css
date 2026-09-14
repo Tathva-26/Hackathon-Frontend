@@ -24,13 +24,11 @@ html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden !important;
   background: #000000;
   color: #ffffff;
   font-family: 'Inter', sans-serif;
 }
+
 
 /* =========================
    HERO
@@ -92,18 +90,16 @@ html, body {
   width: 30vw;
   max-width: 420px;
   right: -4vw;
-  top: -24vh;
+  top: -20vh;      /* was -24vh */
   opacity: 0.2;
   z-index: 1;
-  /* transform: rotate(25deg); */
 }
 
-/* WhatsApp/bottom graphic — faint, lower-left, sits behind the hands */
 .decor-bottom {
-  width: 38vw;
-  max-width: 500px;
+  width: 40vw;
+  max-width: 600px;
   left: -8vw;
-  bottom: -20vh;
+  bottom: -25vh;   /* was -20vh */
   opacity: 0.35;
   z-index: 1;
 }
@@ -118,7 +114,7 @@ html, body {
 
 /* Landing Page Navbar (Original Exact Layout) */
 .navbar-home {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -130,10 +126,13 @@ html, body {
 
 .logo {
   position: absolute;
-  top: 24px;
+  top: 24px;       /* moved closer to top edge, was 24px */
   left: 50%;
   transform: translateX(-50%);
   display: block;
+  height: 170px;     /* smaller size, was 200px via .logo img */
+  width: auto;
+  object-fit: contain;
 }
 
 .logo img {
