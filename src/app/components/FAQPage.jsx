@@ -82,7 +82,7 @@ export default function FAQPage() {
                 >
                   <h3 className="faq-question-text">{item.question}</h3>
                   <div className="faq-arrow-btn">
-                    {isOpen ? "↓" : "↑"}
+                    {isOpen ? "↑" : "↓"}
                   </div>
                 </div>
 
