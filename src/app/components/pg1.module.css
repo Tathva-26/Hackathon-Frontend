@@ -194,10 +194,10 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1000px;
-  min-height: 480px;
+	max-width: 1080px;
+	min-height: 520px;
   margin: 0 auto;
-  padding: 50px 30px 20px;
+	padding: 56px 36px 38px;
   display: flex;
   position: relative;
 }
@@ -206,28 +206,112 @@
   display: inline-block;
   background-color: #e6e6e6;
   color: #0a0a0a;
-  font-family: "Anton", sans-serif;
-  font-size: 48.41px;
+	font-family: "Press Start 2P", monospace;
+	font-size: 24px;
   line-height: 100%;
   text-align: center;
   padding: 12px 32px;
   border-radius: 36.88px;
-  margin-bottom: 48px;
+	margin-bottom: 24px;
 }
 
-.description {
-  color: #f2f2f2;
-  font-family: "Anton", sans-serif;
-  font-size: 21.95px;
-  line-height: 1.5;
+.timelineIntro {
+	margin: 0 0 34px;
+	color: #a3a3a3;
+	font-family: "Roboto", sans-serif;
+	font-size: 0.9rem;
+	letter-spacing: 0.12em;
   text-align: center;
-  max-width: 660px;
-  margin: 0 0 96px;
+	text-transform: uppercase;
+}
+
+.timeline {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	width: 100%;
+	max-width: 900px;
+	margin-bottom: 42px;
+	padding: 0 1.5%;
+}
+
+.timelineLine {
+	position: absolute;
+	top: 3.75rem;
+	right: 5%;
+	left: 5%;
+	border-top: 2px dotted rgba(255, 255, 255, 0.3);
+}
+
+.milestone {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 0;
+	text-align: center;
+}
+
+.milestoneDate {
+	padding: 0.42rem 0.7rem;
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	border-radius: 0.35rem;
+	background: #111113;
+	color: #d4d4d4;
+	font-family: "Roboto", sans-serif;
+	font-size: 0.82rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+}
+
+.milestoneNode {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	margin: 0.85rem 0 1.2rem;
+	border: 2px solid #a3a3a3;
+	border-radius: 50%;
+	background: #111113;
+	box-shadow: 0 0 0 5px #080808;
+}
+
+.milestoneIcon {
+	width: 1.25rem;
+	height: 1.25rem;
+	color: #d4d4d4;
+}
+
+.milestonePhase {
+	margin-bottom: 0.45rem;
+	color: #737373;
+	font-family: "Roboto", sans-serif;
+	font-size: 0.74rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+}
+
+.milestone h3 {
+	margin: 0;
+	color: #ffffff;
+	font-family: "Roboto", sans-serif;
+	font-size: 1.05rem;
+	line-height: 1.25;
+}
+
+.milestone p {
+	margin: 0.35rem 0 0;
+	color: #a3a3a3;
+	font-family: "Roboto", sans-serif;
+	font-size: 0.82rem;
+	line-height: 1.3;
 }
 
 .buttonRow {
   display: flex;
-  gap: 220px;
+	gap: clamp(1rem, 8vw, 7rem);
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -236,7 +320,7 @@
   background-color: #e6e6e6;
   color: #0a0a0a;
   font-family: "Anton", sans-serif;
-  font-size: 46.35px;
+	font-size: clamp(1.3rem, 3vw, 2.2rem);
   line-height: 100%;
   text-align: center;
   border: none;
@@ -256,14 +340,26 @@
   outline-offset: 3px;
 }
 
+@media (max-width: 900px) {
+	.pill { font-size: 16px; }
+}
+
 @media (max-width: 640px) {
   .logo { top: 20px; left: 1rem; }
-  .logo img { height: 38px; }
-  .card { padding: 48px 24px 32px; }
-  .pill { font-size: 32px; margin-bottom: 32px; }
-  .description { font-size: 16px; margin-bottom: 48px; }
-  .button { font-size: 28px; }
-  .buttonRow { gap: 20px; }
+	.logo img { height: 38px; }
+	.card { padding: 48px 16px 32px; }
+	.pill { font-size: 16px; margin-bottom: 18px; }
+	.timelineIntro { margin-bottom: 24px; font-size: 0.72rem; }
+	.timeline { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 28px; padding: 0; }
+	.timelineLine { top: 1.25rem; right: auto; bottom: 1.25rem; left: 0.75rem; border-top: 0; border-left: 2px dotted rgba(255, 255, 255, 0.3); }
+	.milestone { display: grid; grid-template-columns: 3rem 1fr; grid-template-rows: auto auto auto; column-gap: 0.85rem; align-items: center; text-align: left; }
+	.milestoneDate { grid-column: 2; grid-row: 1; justify-self: start; }
+	.milestoneNode { grid-column: 1; grid-row: 1 / span 3; margin: 0 auto; }
+	.milestonePhase { grid-column: 2; grid-row: 2; margin: 0.35rem 0 0; }
+	.milestone h3 { grid-column: 2; grid-row: 3; }
+	.milestone p { grid-column: 2; grid-row: 4; }
+	.button { font-size: 1.55rem; }
+	.buttonRow { gap: 1rem; }
 }
 
 .decorLeft { left: -5rem; top: 25%; width: 20rem; }
