@@ -5,33 +5,33 @@ import { useState } from "react";
 const faqData = [
   {
     id: 1,
-    question: "What is TatHack?",
+    question: "Who can participate?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "TatHack ’26 is open to all college students across India.",
   },
   {
     id: 2,
-    question: "What is TatHack?",
+    question: "What is the team size?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "Teams can have 1–4 participants.",
   },
   {
     id: 3,
-    question: "What is TatHack?",
+    question: "What is the format of the Preliminary Round?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Teams will choose one of the provided repositories, then debug the existing code and add features as instructed.",
   },
   {
     id: 4,
-    question: "What is TatHack?",
+    question: "Where and when is the hackathon conducted?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "The Preliminary Round is fully online, while the Grand Finale will be held at NIT Calicut during Tathva ’26 on 8–9 October 2026.",
   },
   {
     id: 5,
-    question: "What is TatHack?",
+    question: "What is the registration fee?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "The registration fee is ₹150 per participant. All pre-registered participants will be notified when the payment window opens.",
   },
 ];
 
@@ -82,7 +82,7 @@ export default function FAQPage() {
                 >
                   <h3 className="faq-question-text">{item.question}</h3>
                   <div className="faq-arrow-btn">
-                    {isOpen ? "↓" : "↑"}
+                    {isOpen ? "↑" : "↓"}
                   </div>
                 </div>
 

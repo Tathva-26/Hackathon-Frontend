@@ -136,146 +136,246 @@
 
 /* ============ SCROLL STAGE (appended) ============ */
 .scrollSpacer {
-  position: relative;
-  height: 280vh; /* total scroll distance for hero → about transition */
+	position: relative;
+	height: 480svh;
+	/* total scroll distance for hero → about → sponsors transition */
 }
 
 .stickyStage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
+	position: sticky;
+	top: 0;
+	height: 100svh;
+	overflow: hidden;
 }
 
-/* ============ ABOUT SECTION (appended, merged from pg2) ============ */
 .aboutWrap {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  box-sizing: border-box;
-  pointer-events: none;
-  z-index: 5;
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 120px 24px 30px;
+	box-sizing: border-box;
+	pointer-events: none;
+	z-index: 5;
 }
 
 .decorTopRight {
-  position: absolute;
-  width: 30vw;
-  max-width: 420px;
-  right: -4vw;
-  top: 0;
-  z-index: 1;
-  pointer-events: none;
-  user-select: none;
+	position: absolute;
+	width: 30vw;
+	max-width: 420px;
+	right: -4vw;
+	top: 0;
+	z-index: 1;
+	pointer-events: none;
+	user-select: none;
 }
 
 .logo {
-  position: absolute;
-  top: 30px;
-  left: 5.5%;
-  display: block;
-  z-index: 2;
+	position: absolute;
+	top: 30px;
+	left: 5.5%;
+	display: block;
+	z-index: 2;
 }
 
 .logo img {
-  height: 150px;
-  width: auto;
-  object-fit: contain;
+	height: 150px;
+	width: auto;
+	object-fit: contain;
 }
 
 .card {
-  z-index: 5;
-  background: none;
-  border: 1.5px solid #ffffff40;
-  border-radius: 24px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 1000px;
-  min-height: 480px;
-  margin: 0 auto;
-  padding: 50px 30px 20px;
-  display: flex;
-  position: relative;
+	background: none;
 }
 
 .pill {
-  display: inline-block;
-  background-color: #e6e6e6;
-  color: #0a0a0a;
-  font-family: "Anton", sans-serif;
-  font-size: 48.41px;
-  line-height: 100%;
-  text-align: center;
-  padding: 12px 32px;
-  border-radius: 36.88px;
-  margin-bottom: 48px;
+	display: inline-block;
+	background-color: #e6e6e6;
+	color: #0a0a0a;
+	font-family: "Press Start 2P", monospace;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	font-size: 24px;
+	line-height: 100%;
+	text-align: center;
+	padding: 12px 32px;
+	border-radius: 36.88px;
+	margin-bottom: 24px;
 }
 
 .description {
-  color: #f2f2f2;
-  font-family: "Anton", sans-serif;
-  font-size: 21.95px;
-  line-height: 1.5;
-  text-align: center;
-  max-width: 660px;
-  margin: 0 0 96px;
+	color: #f2f2f2;
+	font-family: "Inter", sans-serif;
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 1.5;
+	text-align: center;
+	max-width: 660px;
+	margin: 0 0 24px;
 }
 
 .buttonRow {
-  display: flex;
-  gap: 220px;
-  flex-wrap: wrap;
-  justify-content: center;
+	display: flex;
+	gap: 24px;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 
 .button {
-  background-color: #e6e6e6;
-  color: #0a0a0a;
-  font-family: "Anton", sans-serif;
-  font-size: 46.35px;
-  line-height: 100%;
-  text-align: center;
-  border: none;
-  border-radius: 10px;
-  padding: 14px 28px;
-  cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+	background-color: #e6e6e6;
+	color: #0a0a0a;
+	font-family: "Press Start 2P", monospace;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	font-size: 20px;
+	line-height: 100%;
+	text-align: center;
+	border: none;
+	border-radius: 10px;
+	padding: 18px 28px;
+	cursor: pointer;
+	transition: transform 0.15s ease, background-color 0.15s ease;
 }
 
 .button:hover {
-  background-color: #ffffff;
-  transform: translateY(-2px);
+	background-color: #ffffff;
+	transform: translateY(-2px);
 }
 
 .button:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 3px;
+	outline: 2px solid #ffffff;
+	outline-offset: 3px;
 }
 
 @media (max-width: 640px) {
-  .logo { top: 20px; left: 1rem; }
-  .logo img { height: 38px; }
-  .card { padding: 48px 24px 32px; }
-  .pill { font-size: 32px; margin-bottom: 32px; }
-  .description { font-size: 16px; margin-bottom: 48px; }
-  .button { font-size: 28px; }
-  .buttonRow { gap: 20px; }
+	.aboutWrap {
+		align-items: center;
+		justify-content: center;
+		padding-top: 10svh;
+	}
+
+	.logo {
+		top: 20px;
+		left: 1rem;
+	}
+
+	.logo img {
+		height: 38px;
+	}
+
+	.card {
+		padding: 24px 12px 18px;
+		min-height: auto;
+		width: 95%;
+		border: 1.5px solid rgba(255, 255, 255, 0.25);
+		border-radius: 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.pill {
+		font-size: 14px;
+		margin-bottom: 15px;
+		padding: 8px 18px;
+	}
+
+	.description {
+		font-size: 13px;
+		margin-bottom: 20px;
+		line-height: 1.35;
+	}
+
+	.button {
+		font-size: 12px;
+		padding: 12px 18px;
+	}
+
+	.buttonRow {
+		gap: 12px;
+		width: 100%;
+		justify-content: center;
+	}
 }
 
-.decorLeft { left: -5rem; top: 25%; width: 20rem; }
-.decorRight { right: -6rem; top: 18%; width: 22rem; }
-.decorBottom { bottom: -3rem; left: 50%; width: 20rem; transform: translateX(-50%); }
-.decorTopRight { right: 8%; top: 8%; width: 8rem; }
+.decorLeft {
+	left: -5rem;
+	top: 25%;
+	width: 20rem;
+}
+
+.decorRight {
+	right: -6rem;
+	top: 18%;
+	width: 22rem;
+}
+
+.decorBottom {
+	bottom: -3rem;
+	left: 50%;
+	width: 20rem;
+	transform: translateX(-50%);
+}
+
+.decorTopRight {
+	right: 8%;
+	top: 8%;
+	width: 8rem;
+}
+
+.sponsorsCardWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	margin-top: -6svh;
+	/* Moves the sponsor box UP in desktop view */
+}
+
+.aboutCardWrapper {
+	margin-top: -6svh;
+	/* Moves the about box UP in desktop view */
+}
 
 @media (max-width: 640px) {
-	.hero { padding-inline: 1rem; }
-	.heroContent { min-height: 58svh; }
-	.aboutButtons { flex-direction: column; align-items: stretch; }
-	.decor { opacity: 0.6; }
-	.decorLeft { left: -8rem; }
-	.decorRight { right: -9rem; }
+	.hero {
+		padding-inline: 1rem;
+	}
+
+	.heroContent {
+		min-height: 58svh;
+	}
+
+	.aboutButtons {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.decor {
+		opacity: 0.6;
+	}
+
+	.decorLeft {
+		left: -8rem;
+	}
+
+	.decorRight {
+		right: -9rem;
+	}
+
+	.scrollSpacer {
+		height: 380svh;
+	}
+
+	.sponsorsCardWrapper {
+		margin-top: 2svh;
+		/* Keeps the spacing on mobile Sponsors strictly */
+	}
+
+	.aboutCardWrapper {
+		margin-top: 15svh;
+		/* Independent distance only for About dropping it below TatHack */
+	}
 }

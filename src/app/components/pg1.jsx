@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./pg1.module.css";
 import Navbar from "./Navbar";
 
 export default function Pg1() {
+  const router = useRouter();
   const spacerRef = useRef(null);
   const heroRef = useRef(null);
   const leftHandRef = useRef(null);
@@ -13,12 +15,50 @@ export default function Pg1() {
   const titleRef = useRef(null);
   const dateRef = useRef(null);
   const aboutCardRef = useRef(null);
-  const aboutLogoRef = useRef(null);
+  const sponsorsCardRef = useRef(null);
   const heroLogoRef = useRef(null);
   const homeNavRef = useRef(null);
 
   useEffect(() => {
     homeNavRef.current = document.querySelector(".navbar-home");
+
+    // Gesture logic states
+    let isLocked = false;
+    let gestureActive = false;
+    let wheelTimeout = null;
+    let lastScrolled = 0;
+
+    const handleTouchStart = () => { gestureActive = true; };
+    const handleTouchEnd = () => {
+      gestureActive = false;
+      isLocked = false;
+      document.body.style.overflow = '';
+    };
+
+    const handleWheel = (e) => {
+      gestureActive = true;
+      if (wheelTimeout) clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(() => {
+        gestureActive = false;
+      }, 200);
+
+      if (isLocked) {
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (isLocked) {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('touchstart', handleTouchStart, { passive: true });
+      window.addEventListener('touchend', handleTouchEnd, { passive: true });
+      window.addEventListener('wheel', handleWheel, { passive: false });
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
 
     const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
 
@@ -26,15 +66,43 @@ export default function Pg1() {
       const spacer = spacerRef.current;
       if (!spacer) return;
 
-      // progress = how far we've scrolled through the sticky stage (0 to 1)
       const rect = spacer.getBoundingClientRect();
       const total = spacer.offsetHeight - window.innerHeight;
       const scrolled = -rect.top;
+
+      const holdPoint = 0.50 * total;
+
+      // Trap going DOWN (Hero -> About)
+      if (scrolled >= holdPoint && lastScrolled < holdPoint && gestureActive) {
+        isLocked = true;
+        setTimeout(() => { isLocked = false; }, 800); // 800ms absolute trackpad momentum release
+        if (typeof window !== 'undefined' && window.innerWidth <= 640) document.body.style.overflow = 'hidden';
+        window.scrollTo({ top: window.scrollY + rect.top + holdPoint });
+      }
+
+      // Trap going UP (Sponsors -> About)
+      if (scrolled <= holdPoint && lastScrolled > holdPoint && gestureActive) {
+        isLocked = true;
+        setTimeout(() => { isLocked = false; }, 800); // 800ms absolute trackpad momentum release
+        if (typeof window !== 'undefined' && window.innerWidth <= 640) document.body.style.overflow = 'hidden';
+        window.scrollTo({ top: window.scrollY + rect.top + holdPoint });
+      }
+
+      lastScrolled = scrolled;
+
+      // `progress` scales automatically exactly to the component's CSS scroll coordinates!
       const progress = clamp(total > 0 ? scrolled / total : 0, 0, 1);
 
-      // --- hands: enlarge + fade across the whole scroll ---
-      const handScale = 1 + progress * 0.7;
-      const handOpacity = 1 - progress;
+      // Phase 1 (0 to 0.50 of total scroll) maps exactly against original sizing specs
+      const progress1 = clamp(progress / 0.50, 0, 1);
+
+      // Phase 2 (0.50 to 1.0 of total scroll) handles the injected Sponsors screen
+      const progress2 = clamp((progress - 0.50) / 0.50, 0, 1);
+
+      // --- hands: enlarge + fade earlier so they don't block About ---
+      const handScale = 1 + progress1 * 0.7;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+      const handOpacity = isMobile ? 1 - clamp(progress1 / 0.4, 0, 1) : 1 - progress1;
       if (leftHandRef.current) {
         leftHandRef.current.style.transform = `rotate(18deg) scale(${handScale})`;
         leftHandRef.current.style.opacity = handOpacity;
@@ -45,7 +113,7 @@ export default function Pg1() {
       }
 
       // --- "PRESENTS": floats up and disappears early ---
-      const presentsProgress = clamp(progress / 0.35, 0, 1);
+      const presentsProgress = clamp(progress1 / 0.35, 0, 1);
       if (presentsRef.current) {
         presentsRef.current.style.opacity = 1 - presentsProgress;
         presentsRef.current.style.transform = `translateY(${-60 * presentsProgress}px)`;
@@ -57,7 +125,7 @@ export default function Pg1() {
       }
 
       // --- Title + date: fade out shortly after ---
-      const titleProgress = clamp((progress - 0.15) / 0.4, 0, 1);
+      const titleProgress = clamp((progress1 - 0.15) / 0.4, 0, 1);
       const titleOpacity = 1 - titleProgress;
       if (titleRef.current) {
         titleRef.current.style.opacity = titleOpacity;
@@ -69,27 +137,36 @@ export default function Pg1() {
       }
 
       // --- About card / logo: fade + rise in for the last stretch ---
-      const aboutProgress = clamp((progress - 0.4) / 0.6, 0, 1);
+      const aboutProgress = clamp((progress1 - 0.4) / 0.6, 0, 1);
+      const aboutFadeOut = clamp(progress2 / 0.4, 0, 1);
+      const aboutFinalOpacity = aboutProgress - aboutFadeOut;
+
       if (aboutCardRef.current) {
-        aboutCardRef.current.style.opacity = aboutProgress;
-        aboutCardRef.current.style.transform = `translateY(${50 * (1 - aboutProgress)}px) scale(${0.95 + 0.05 * aboutProgress})`;
-        aboutCardRef.current.style.pointerEvents = aboutProgress > 0.15 ? "auto" : "none";
+        aboutCardRef.current.style.opacity = aboutFinalOpacity;
+        aboutCardRef.current.style.transform = `translateY(${50 * (1 - aboutProgress) + 50 * aboutFadeOut}px) scale(${0.95 + 0.05 * aboutProgress - 0.05 * aboutFadeOut})`;
+        aboutCardRef.current.style.pointerEvents = aboutFinalOpacity > 0.5 ? "auto" : "none";
       }
 
-      // --- Home navbar: fades out as the inner About-page navbar fades in ---
-      if (homeNavRef.current) {
-        homeNavRef.current.style.opacity = 1 - aboutProgress;
-        homeNavRef.current.style.pointerEvents = aboutProgress > 0.15 ? "none" : "auto";
+      // --- Sponsors card: fade + rise in
+      const sponsorsIn = clamp((progress2 - 0.4) / 0.6, 0, 1);
+      if (sponsorsCardRef.current) {
+        sponsorsCardRef.current.style.opacity = sponsorsIn;
+        sponsorsCardRef.current.style.transform = `translateY(${50 * (1 - sponsorsIn)}px) scale(${0.95 + 0.05 * sponsorsIn})`;
+        sponsorsCardRef.current.style.pointerEvents = sponsorsIn > 0.5 ? "auto" : "none";
       }
 
-      if (aboutLogoRef.current) {
-        aboutLogoRef.current.style.opacity = aboutProgress;
-        aboutLogoRef.current.style.pointerEvents = aboutProgress > 0.15 ? "auto" : "none";
+      // --- Home navbar logo fade-in: perfectly synced with About page ---
+      const navLogo = document.getElementById("navbar-home-logo");
+      if (navLogo) {
+        navLogo.style.opacity = aboutProgress;
+        navLogo.style.pointerEvents = aboutProgress > 0.15 ? "auto" : "none";
       }
+
+
 
       // Hero stops intercepting clicks once mostly faded out
       if (heroRef.current) {
-        heroRef.current.style.pointerEvents = progress > 0.6 ? "none" : "auto";
+        heroRef.current.style.pointerEvents = progress1 > 0.6 ? "none" : "auto";
       }
     }
 
@@ -98,6 +175,12 @@ export default function Pg1() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchmove', handleTouchMove);
+      if (wheelTimeout) clearTimeout(wheelTimeout);
+
       // Reset any inline styles we imperatively set on the shared Navbar DOM node,
       // since React reuses that node across route changes and won't clear these itself.
       if (homeNavRef.current) {
@@ -108,78 +191,120 @@ export default function Pg1() {
   }, []);
 
   return (
-    <div className={styles.scrollSpacer} ref={spacerRef}>
-      <div className={styles.stickyStage}>
+    <>
+      <div className={styles.scrollSpacer} ref={spacerRef}>
+        {/* Anchor for Navbar link routing */}
+        <div id="sponsors" style={{ position: "absolute", top: "460svh", left: 0 }} />
+        <div className={styles.stickyStage}>
 
-        {/* ---------- HERO ---------- */}
-        <main className="hero" ref={heroRef}>
-          <img
-            ref={heroLogoRef}
-            src="/assets/tathva.png"
-            className="logo"
-            alt="Tathva '26 NIT Calicut"
-          />
-          <div className="hand-glow glow-left"></div>
-          <img
-            ref={leftHandRef}
-            src="/assets/hand-left.png"
-            className="decor decor-left"
-            alt=""
-          />
+          {/* ---------- HERO ---------- */}
+          <main className="hero" ref={heroRef}>
+            <img
+              ref={heroLogoRef}
+              src="/assets/tathva.png"
+              className="logo"
+              alt="Tathva '26 NIT Calicut"
+            />
+            <div className="hand-glow glow-left"></div>
+            <img
+              ref={leftHandRef}
+              src="/assets/hand-left.png"
+              className="decor decor-left"
+              alt=""
+            />
 
-          <div className="hand-glow glow-right"></div>
-          <img
-            ref={rightHandRef}
-            src="/assets/hand-right.png"
-            className="decor decor-right"
-            alt=""
-          />
+            <div className="hand-glow glow-right"></div>
+            <img
+              ref={rightHandRef}
+              src="/assets/hand-right.png"
+              className="decor decor-right"
+              alt=""
+            />
 
-          <img src="/assets/whatsapp-graphic.jpg" className="decor decor-bottom" alt="" />
-          <img src="/assets/atom.png" className="decor decor-top-right" alt="" />
+            <img src="/assets/whatsapp-graphic.jpg" className="decor decor-bottom" alt="" />
+            <img src="/assets/atom.png" className="decor decor-top-right" alt="" />
 
-          <section className="hero-content">
-            <p className="presents" ref={presentsRef}>PRESENTS</p>
+            <section className="hero-content">
+              <p className="presents" ref={presentsRef}>PRESENTS</p>
 
-            <h1 className="title" ref={titleRef}>
-              <span>TatHack</span>
-              <span>&apos;26</span>
-            </h1>
+              <h1 className="title" ref={titleRef}>
+                <span>TatHack</span>
+                <span>&apos;26</span>
+              </h1>
 
-            <p className="date" ref={dateRef}>October 9th - 10th</p>
-          </section>
-        </main>
+              <p className="date" ref={dateRef}>October 9th - 10th</p>
+            </section>
+          </main>
 
-        {/* ---------- ABOUT ---------- */}
-        <div ref={aboutLogoRef} style={{ opacity: 0, pointerEvents: "none" }}>
-          <Navbar variant="inner" />
-        </div>
+          {/* ---------- ABOUT ---------- */}
 
-        <div className={styles.aboutWrap}>
-          <div
-            className={styles.card}
-            ref={aboutCardRef}
-            style={{ opacity: 0, pointerEvents: "none" }}
-          >
-            <span className={styles.pill}>ABOUT</span>
+          <div className={styles.aboutWrap}>
+            <div
+              className={`prize-card-container ${styles.card} ${styles.aboutCardWrapper}`}
+              ref={aboutCardRef}
+              style={{ opacity: 0, pointerEvents: "none" }}
+            >
+              <span className={styles.pill}>ABOUT</span>
 
-            <p className={styles.description}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-              dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-              mollit anim id est laborum.
-            </p>
+              <p className={styles.description}>
+                TatHack ’26 is the flagship hackathon of Tathva ’26 at NIT Calicut, bringing together developers, designers, and problem-solvers from across the country to build innovative solutions under pressure. In the preliminary round, unlike conventional hackathons, TatHack begins with a challenge and a set of initial repositories—you’ll need to understand existing code, fix it, adapt it, rethink possibilities, and transform it into your own solution. The journey starts with an online preliminary round, with the selected teams advancing to the Grand Finale at NIT Calicut on 8–9 October 2026, where they will compete in a 30-hour hackathon, building a complete solution to interesting problems from the ground up—with a ₹1,00,000 prize pool waiting for those who rise to the challenge.
+              </p>
 
-            <div className={styles.buttonRow}>
-              <button className={styles.button}>REGISTER NOW</button>
-              <button className={styles.button}>SEE SCHEDULE</button>
+              <div className={styles.buttonRow}>
+                <button
+                  className={styles.button}
+                  onClick={() => router.push('/register')}
+                >
+                  REGISTER NOW
+                </button>
+                <button className={styles.button}>SEE SCHEDULE</button>
+              </div>
             </div>
           </div>
-        </div>
 
+          {/* ---------- SPONSORS ---------- */}
+          <div className={styles.aboutWrap}>
+            <div
+              ref={sponsorsCardRef}
+              className={styles.sponsorsCardWrapper}
+              style={{
+                opacity: 0,
+                pointerEvents: "none"
+              }}
+            >
+              <div className={`prize-card-container ${styles.card}`}>
+                <div className="prize-pill-badge">
+                  <span>SPONSORS</span>
+                </div>
+                <div className="sponsors-content-wrapper">
+                  <p className="sponsors-subtext">REVEALED SOON</p>
+                  <div className="sponsors-placeholder-grid">
+                    <div className="sponsor-box">
+                      <span className="sponsor-badge-tag">TITLE SPONSOR</span>
+                      <div className="sponsor-slot">COMING SOON</div>
+                    </div>
+                    <div className="sponsor-box">
+                      <span className="sponsor-badge-tag">POWERED BY</span>
+                      <div className="sponsor-slot">COMING SOON</div>
+                    </div>
+                    <div className="sponsor-box">
+                      <span className="sponsor-badge-tag">PLATINUM PARTNER</span>
+                      <div className="sponsor-slot">COMING SOON</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contacts Info */}
+                <div style={{ marginTop: '24px', paddingBottom: '12px', textAlign: 'center', fontFamily: '"Inter", sans-serif', fontSize: '15px', color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <p style={{ margin: '6px 0' }}>Contact: +91 9188590540</p>
+                  <p style={{ margin: '6px 0' }}>Email: rahan10749@gmail.com</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
