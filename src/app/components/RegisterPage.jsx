@@ -45,6 +45,27 @@ export default function RegisterPage() {
     };
   }, [status, authToken]);
 
+  const handleEditTeam = () => {
+    const reg = regInfo.data;
+    setTeamName(reg.teamName || "");
+    setCollegeName(reg.collegeName || "");
+    
+    // Extract leader phone, and keep other members in the array
+    if (reg.members) {
+      const leader = reg.members.find(m => m.isLeader);
+      if (leader) setLeaderPhone(leader.phone);
+      
+      const otherMembers = reg.members.filter(m => !m.isLeader).map(m => ({
+        name: m.name,
+        email: m.email,
+        phone: m.phone
+      }));
+      setMembers(otherMembers);
+    }
+    
+    setShowEditor(true);
+  };
+
   const addMember = () => {
     if (members.length < 3)
       setMembers((current) => [...current, { ...emptyMember }]);
@@ -218,7 +239,7 @@ export default function RegisterPage() {
             <span>TEAM.</span>
           </h1>
           <p className={styles.authCopy}>
-            {"Here is your current team. You can register another team if you'd like."}
+            {"Here is your current team. You can update these details before payment opens."}
           </p>
           <div className={styles.orderDetails}>
             <div>
@@ -245,9 +266,9 @@ export default function RegisterPage() {
           <button
             type="button"
             className={styles.primaryButton}
-            onClick={() => setShowEditor(true)}
+            onClick={handleEditTeam}
           >
-            REGISTER ANOTHER TEAM <span>↗</span>
+            EDIT TEAM DETAILS <span>↗</span>
           </button>
           <div style={{ marginTop: 24 }}>
             <button
@@ -499,7 +520,9 @@ export default function RegisterPage() {
               type="submit"
               disabled={submitState === "submitting"}
             >
-              {submitState === "submitting" ? "CREATING..." : "CREATE TEAM ↗"}
+              {submitState === "submitting" 
+                ? (regInfo.registered ? "UPDATING..." : "CREATING...") 
+                : (regInfo.registered ? "UPDATE TEAM ↗" : "CREATE TEAM ↗")}
             </button>
           </div>
         </form>
