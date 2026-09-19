@@ -268,7 +268,7 @@ export default function Pg1() {
               <span className={styles.pill}>TatHack</span>
 
               <p className={styles.description}>
-                TatHack ’26, the flagship hackathon of Tathva ’26 at NIT Calicut, is here. Take on a unique online preliminary round where you’ll debug, adapt, and transform existing code into your own solution. The top teams advance to the Grand Finale at NIT Calicut on 8–9 October 2026 for a 30-hour hackathon and a shot at the ₹1,00,000 prize pool.
+                TatHack ’26, the flagship hackathon of Tathva ’26 at NIT Calicut, is here. Take on a unique online preliminary round where you’ll debug, adapt, and transform existing code into your own solution. The top teams advance to the Grand Finale at NIT Calicut on 9-10 October 2026 for a 30-hour hackathon and a shot at the ₹1,00,000 prize pool.
               </p>
 
               <div className={styles.buttonRow}>
