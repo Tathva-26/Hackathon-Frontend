@@ -452,11 +452,13 @@ export default function RegisterPage() {
               <label>
                 NAME
                 <input
+                  type="text"
                   value={member.name}
                   onChange={(event) =>
                     updateMember(index, "name", event.target.value)
                   }
                   placeholder="Full name"
+                  maxLength={80}
                 />
               </label>
               <label>
