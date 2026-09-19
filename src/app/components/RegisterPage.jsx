@@ -490,9 +490,9 @@ export default function RegisterPage() {
           )}
           <div className={styles.submitRow}>
             <p>
-              Fee is calculated by the backend
+              Fee = 150 * team size
               <br />
-              based on your team size.
+              To be collected later
             </p>
             <button
               className={styles.submitButton}

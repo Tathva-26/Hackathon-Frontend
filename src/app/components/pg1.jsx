@@ -14,6 +14,7 @@ export default function Pg1() {
   const presentsRef = useRef(null);
   const titleRef = useRef(null);
   const dateRef = useRef(null);
+  const preRegRef = useRef(null);
   const aboutCardRef = useRef(null);
   const sponsorsCardRef = useRef(null);
   const heroLogoRef = useRef(null);
@@ -135,6 +136,10 @@ export default function Pg1() {
         dateRef.current.style.opacity = titleOpacity;
         dateRef.current.style.transform = `translateY(${-20 * titleProgress}px)`;
       }
+      if (preRegRef.current) {
+        preRegRef.current.style.opacity = titleOpacity;
+        preRegRef.current.style.transform = `translateY(${-20 * titleProgress}px)`;
+      }
 
       // --- About card / logo: fade + rise in for the last stretch ---
       const aboutProgress = clamp((progress1 - 0.4) / 0.6, 0, 1);
@@ -233,21 +238,37 @@ export default function Pg1() {
               </h1>
 
               <p className="date" ref={dateRef}>October 9th - 10th</p>
+
+              <div
+                className="pre-reg-badge"
+                ref={preRegRef}
+                onClick={() => router.push('/register')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    router.push('/register');
+                  }
+                }}
+              >
+                <span className="pre-reg-dot"></span>
+                <span>Pre-registrations Open Now</span>
+              </div>
             </section>
           </main>
 
           {/* ---------- ABOUT ---------- */}
 
-          <div className={styles.aboutWrap}>
+          <div className={`${styles.aboutWrap} mb-25 lg:mt-15`}>
             <div
               className={`prize-card-container ${styles.card} ${styles.aboutCardWrapper}`}
               ref={aboutCardRef}
               style={{ opacity: 0, pointerEvents: "none" }}
             >
-              <span className={styles.pill}>ABOUT</span>
+              <span className={styles.pill}>TatHack</span>
 
               <p className={styles.description}>
-                TatHack ’26 is the flagship hackathon of Tathva ’26 at NIT Calicut, bringing together developers, designers, and problem-solvers from across the country to build innovative solutions under pressure. In the preliminary round, unlike conventional hackathons, TatHack begins with a challenge and a set of initial repositories—you’ll need to understand existing code, fix it, adapt it, rethink possibilities, and transform it into your own solution. The journey starts with an online preliminary round, with the selected teams advancing to the Grand Finale at NIT Calicut on 8–9 October 2026, where they will compete in a 30-hour hackathon, building a complete solution to interesting problems from the ground up—with a ₹1,00,000 prize pool waiting for those who rise to the challenge.
+                TatHack ’26, the flagship hackathon of Tathva ’26 at NIT Calicut, is here. Take on a unique online preliminary round where you’ll debug, adapt, and transform existing code into your own solution. The top teams advance to the Grand Finale at NIT Calicut on 8–9 October 2026 for a 30-hour hackathon and a shot at the ₹1,00,000 prize pool.
               </p>
 
               <div className={styles.buttonRow}>
@@ -263,10 +284,10 @@ export default function Pg1() {
           </div>
 
           {/* ---------- SPONSORS ---------- */}
-          <div className={styles.aboutWrap}>
+          <div className={`${styles.spWrap} mt-15`}>
             <div
               ref={sponsorsCardRef}
-              className={styles.sponsorsCardWrapper}
+              className={`${styles.sponsorsCardWrapper}`}
               style={{
                 opacity: 0,
                 pointerEvents: "none"
@@ -296,6 +317,7 @@ export default function Pg1() {
 
                 {/* Contacts Info */}
                 <div style={{ marginTop: '24px', paddingBottom: '12px', textAlign: 'center', fontFamily: '"Inter", sans-serif', fontSize: '15px', color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <p style={{ margin: '6px 0' }}>Interested in partnering with us?<br/>reach out to us at:</p>
                   <p style={{ margin: '6px 0' }}>Contact: +91 9188590540</p>
                   <p style={{ margin: '6px 0' }}>Email: rahan10749@gmail.com</p>
                 </div>
