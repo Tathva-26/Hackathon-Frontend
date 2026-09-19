@@ -146,9 +146,9 @@ export default function RegisterPage() {
 
       const response = await fetch(url, {
         method,
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({
           teamName: teamName.trim(),
