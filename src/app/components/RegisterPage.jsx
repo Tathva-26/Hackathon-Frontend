@@ -286,13 +286,15 @@ export default function RegisterPage() {
               <strong>₹{Math.round(reg.amount / 100)}</strong>
             </div>
           </div>
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={handleEditTeam}
-          >
-            EDIT TEAM DETAILS <span>↗</span>
-          </button>
+          {regInfo?.data?.status === "DRAFT" && (
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={handleEditTeam}
+            >
+              EDIT TEAM DETAILS <span>↗</span>
+            </button>
+          )}
           <div style={{ marginTop: 24 }}>
             <button
               type="button"
