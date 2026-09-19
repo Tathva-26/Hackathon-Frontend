@@ -25,8 +25,7 @@ export default function RegisterPage() {
   const [registration, setRegistration] = useState(null);
   const [regInfo, setRegInfo] = useState({ fetchedFor: "", loaded: false, registered: false, data: null });
   const [showEditor, setShowEditor] = useState(false);
-
-  // Load the leader's current team so they can view it or register another.
+  // Load the leader's current team so they can view it
   useEffect(() => {
     if (status !== "authenticated" || !authToken) return;
     let cancelled = false;
@@ -35,15 +34,56 @@ export default function RegisterPage() {
         if (cancelled) return;
         const registered = Boolean(data.registered && data.status);
         setRegInfo({ fetchedFor: authToken, loaded: true, registered, data: registered ? data : null });
+        
+        // If the new user has NO team, clear out any old form data left behind by the previous user
+        if (!registered) {
+          setTeamName("");
+          setCollegeName("");
+          setLeaderPhone("");
+          setMembers([]);
+          setFormError("");
+          setSubmitState("idle");
+          setRegistration(null);
+          setShowEditor(false);
+        }
       })
       .catch(() => {
         if (cancelled) return;
         setRegInfo({ fetchedFor: authToken, loaded: true, registered: false, data: null });
+        setTeamName("");
+        setCollegeName("");
+        setLeaderPhone("");
+        setMembers([]);
+        setFormError("");
+        setSubmitState("idle");
+        setRegistration(null);
+        setShowEditor(false);
       });
     return () => {
       cancelled = true;
     };
   }, [status, authToken]);
+
+  const handleEditTeam = () => {
+    const reg = regInfo.data;
+    setTeamName(reg.teamName || "");
+    setCollegeName(reg.collegeName || "");
+    
+    // Extract leader phone, and keep other members in the array
+    if (reg.members) {
+      const leader = reg.members.find(m => m.isLeader);
+      if (leader) setLeaderPhone(leader.phone);
+      
+      const otherMembers = reg.members.filter(m => !m.isLeader).map(m => ({
+        name: m.name,
+        email: m.email,
+        phone: m.phone
+      }));
+      setMembers(otherMembers);
+    }
+    
+    setShowEditor(true);
+  };
 
   const addMember = () => {
     if (members.length < 3)
@@ -100,8 +140,12 @@ export default function RegisterPage() {
     setSubmitState("submitting");
 
     try {
-      const response = await fetch(getApiUrl("/registrations"), {
-        method: "POST",
+      const isUpdating = regInfo.registered;
+      const url = getApiUrl(isUpdating ? "/registrations/me" : "/registrations");
+      const method = isUpdating ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
@@ -129,14 +173,14 @@ export default function RegisterPage() {
       const data = await response.json();
       if (!response.ok)
         throw new Error(
-          data?.error?.message || "We could not create your team.",
+          data?.error?.message || (isUpdating ? "We could not update your team." : "We could not create your team."),
         );
 
       setRegistration(data);
-      setSubmitState("created");
+      setSubmitState(isUpdating ? "updated" : "created");
     } catch (error) {
       setFormError(
-        error.message || "We could not create your team. Try again.",
+        error.message || "We could not save your team. Try again.",
       );
       setSubmitState("idle");
     }
@@ -158,9 +202,9 @@ export default function RegisterPage() {
         <section className={styles.authPanel}>
           <p className={styles.eyebrow}>TATHVA PRESENTS</p>
           <h1 className={styles.authTitle}>
-            BUILD YOUR
+            REGISTER /
             <br />
-            <span>TEAM.</span>
+            <span>LOGIN.</span>
           </h1>
           <p className={styles.authCopy}>
             Sign in with Google first. Your account will be added as the team
@@ -218,7 +262,7 @@ export default function RegisterPage() {
             <span>TEAM.</span>
           </h1>
           <p className={styles.authCopy}>
-            {"Here is your current team. You can register another team if you'd like."}
+            {"Here is your team dashboard."}
           </p>
           <div className={styles.orderDetails}>
             <div>
@@ -245,9 +289,9 @@ export default function RegisterPage() {
           <button
             type="button"
             className={styles.primaryButton}
-            onClick={() => setShowEditor(true)}
+            onClick={handleEditTeam}
           >
-            REGISTER ANOTHER TEAM <span>↗</span>
+            EDIT TEAM DETAILS <span>↗</span>
           </button>
           <div style={{ marginTop: 24 }}>
             <button
@@ -274,39 +318,26 @@ export default function RegisterPage() {
     );
   }
 
-  if (submitState === "created") {
+  if (submitState === "created" || submitState === "updated") {
     return (
       <main className={styles.page}>
         <div className={styles.grid} />
         <section className={styles.successPanel}>
           <p className={styles.eyebrow}>REGISTRATION SAVED</p>
-          <h1 className={styles.successTitle}>
-            TEAM
-            <br />
-            <span>LOCKED IN.</span>
+          <h1 className={styles.authTitle}>
+            {submitState === "updated" ? "TEAM UPDATED." : "TEAM SECURED."}
           </h1>
           <p className={styles.authCopy}>
-            {"Your team details are saved as a draft. You'll be notified when the payment window opens to confirm your spot."}
+            {submitState === "updated"
+              ? "Your team details have been updated."
+              : "Your team has been successfully registered."}
           </p>
-          <div className={styles.orderDetails}>
-            <div>
-              <span>TEAM</span>
-              <strong>{registration.team?.teamName || teamName}</strong>
-            </div>
-            <div>
-              <span>MEMBERS</span>
-              <strong>
-                {registration.team?.memberCount || members.length + 1}
-              </strong>
-            </div>
-            <div>
-              <span>REGISTRATION ID</span>
-              <strong>{registration.registrationId}</strong>
-            </div>
-          </div>
-          <Link href="/" className={styles.primaryButton}>
-            RETURN HOME <span>↗</span>
-          </Link>
+          <button
+            className={styles.primaryButton}
+            onClick={() => window.location.reload()}
+          >
+            GO TO DASHBOARD <span>↗</span>
+          </button>
         </section>
       </main>
     );
@@ -350,24 +381,6 @@ export default function RegisterPage() {
           >
             SIGN OUT ({currentUser.email})
           </button>
-          {regInfo.registered && showEditor && (
-            <button
-              type="button"
-              onClick={() => setShowEditor(false)}
-              style={{
-                marginTop: 8,
-                background: "transparent",
-                border: "1px solid #444",
-                color: "#888",
-                padding: "8px 12px",
-                cursor: "pointer",
-                fontSize: 11,
-                letterSpacing: 1,
-              }}
-            >
-              VIEW CURRENT TEAM
-            </button>
-          )}
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -439,11 +452,13 @@ export default function RegisterPage() {
               <label>
                 NAME
                 <input
+                  type="text"
                   value={member.name}
                   onChange={(event) =>
                     updateMember(index, "name", event.target.value)
                   }
                   placeholder="Full name"
+                  maxLength={80}
                 />
               </label>
               <label>
@@ -499,7 +514,9 @@ export default function RegisterPage() {
               type="submit"
               disabled={submitState === "submitting"}
             >
-              {submitState === "submitting" ? "CREATING..." : "CREATE TEAM ↗"}
+              {submitState === "submitting" 
+                ? (regInfo.registered ? "UPDATING..." : "CREATING...") 
+                : (regInfo.registered ? "UPDATE TEAM ↗" : "CREATE TEAM ↗")}
             </button>
           </div>
         </form>
