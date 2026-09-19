@@ -24,9 +24,8 @@ export default function RegisterPage() {
   const [submitState, setSubmitState] = useState("idle");
   const [registration, setRegistration] = useState(null);
   const [regInfo, setRegInfo] = useState({ fetchedFor: "", loaded: false, registered: false, data: null });
-  const [showEditor, setShowEditor] = useState(false);
 
-  // Load the leader's current team so they can view it or register another.
+  // Load the leader's current team so they can view it
   useEffect(() => {
     if (status !== "authenticated" || !authToken) return;
     let cancelled = false;
@@ -158,9 +157,9 @@ export default function RegisterPage() {
         <section className={styles.authPanel}>
           <p className={styles.eyebrow}>TATHVA PRESENTS</p>
           <h1 className={styles.authTitle}>
-            BUILD YOUR
+            REGISTER /
             <br />
-            <span>TEAM.</span>
+            <span>LOGIN.</span>
           </h1>
           <p className={styles.authCopy}>
             Sign in with Google first. Your account will be added as the team
@@ -205,7 +204,7 @@ export default function RegisterPage() {
       PAID: "PAID",
     }[regInfo.data?.status] || regInfo.data?.status || "";
 
-  if (regInfo.registered && !showEditor) {
+  if (regInfo.registered) {
     const reg = regInfo.data;
     return (
       <main className={styles.page}>
@@ -218,7 +217,7 @@ export default function RegisterPage() {
             <span>TEAM.</span>
           </h1>
           <p className={styles.authCopy}>
-            {"Here is your current team. You can register another team if you'd like."}
+            {"Here is your team dashboard."}
           </p>
           <div className={styles.orderDetails}>
             <div>
@@ -242,13 +241,6 @@ export default function RegisterPage() {
               <strong>₹{Math.round(reg.amount / 100)}</strong>
             </div>
           </div>
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={() => setShowEditor(true)}
-          >
-            REGISTER ANOTHER TEAM <span>↗</span>
-          </button>
           <div style={{ marginTop: 24 }}>
             <button
               type="button"
@@ -350,24 +342,6 @@ export default function RegisterPage() {
           >
             SIGN OUT ({currentUser.email})
           </button>
-          {regInfo.registered && showEditor && (
-            <button
-              type="button"
-              onClick={() => setShowEditor(false)}
-              style={{
-                marginTop: 8,
-                background: "transparent",
-                border: "1px solid #444",
-                color: "#888",
-                padding: "8px 12px",
-                cursor: "pointer",
-                fontSize: 11,
-                letterSpacing: 1,
-              }}
-            >
-              VIEW CURRENT TEAM
-            </button>
-          )}
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
