@@ -25,7 +25,7 @@ const faqData = [
     id: 4,
     question: "Where and when is the hackathon conducted?",
     answer:
-      "The Preliminary Round is fully online, while the Grand Finale will be held at NIT Calicut during Tathva ’26 on 8–9 October 2026.",
+      "The Preliminary Round is fully online, while the Grand Finale will be held at NIT Calicut during Tathva ’26 on 9-10 October 2026.",
   },
   {
     id: 5,
