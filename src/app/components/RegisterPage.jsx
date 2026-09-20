@@ -19,6 +19,13 @@ export default function RegisterPage() {
   const [teamName, setTeamName] = useState("");
   const [collegeName, setCollegeName] = useState("");
   const [leaderPhone, setLeaderPhone] = useState("");
+  const [leaderName, setLeaderName] = useState("");
+
+  useEffect(() => {
+    if (currentUser?.name && !leaderName) {
+      setLeaderName(currentUser.name);
+    }
+  }, [currentUser, leaderName]);
   const [members, setMembers] = useState([]);
   const [formError, setFormError] = useState("");
   const [submitState, setSubmitState] = useState("idle");
@@ -72,7 +79,10 @@ export default function RegisterPage() {
     // Extract leader phone, and keep other members in the array
     if (reg.members) {
       const leader = reg.members.find(m => m.isLeader);
-      if (leader) setLeaderPhone(leader.phone);
+      if (leader) {
+        setLeaderPhone(leader.phone);
+        setLeaderName(leader.name);
+      }
       
       const otherMembers = reg.members.filter(m => !m.isLeader).map(m => ({
         name: m.name,
@@ -105,8 +115,8 @@ export default function RegisterPage() {
   };
 
   const validateForm = () => {
-    if (!teamName.trim() || !collegeName.trim() || !leaderPhone.trim()) {
-      return "Add your team name, college, and leader phone number.";
+    if (!teamName.trim() || !collegeName.trim() || !leaderPhone.trim() || !leaderName.trim()) {
+      return "Add your team name, college, leader name, and phone number.";
     }
 
     if (!/^\+?[0-9\s-]{10,15}$/.test(leaderPhone.trim())) {
@@ -155,7 +165,7 @@ export default function RegisterPage() {
           collegeName: collegeName.trim(),
           members: [
             {
-              name: currentUser.name,
+              name: leaderName.trim() || currentUser.name,
               email: currentUser.email,
               phone: leaderPhone.trim(),
               isLeader: true,
@@ -427,9 +437,27 @@ export default function RegisterPage() {
             <div className={styles.avatar}>
               {currentUser.name?.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <strong>{currentUser.name}</strong>
-              <span>{currentUser.email}</span>
+            <div style={{ display: 'grid', gap: '0.4rem', flex: 1 }}>
+              <input
+                type="text"
+                value={leaderName}
+                onChange={(e) => setLeaderName(e.target.value)}
+                placeholder="Leader Name"
+                maxLength={80}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: '1px solid #333',
+                  color: '#fff',
+                  font: 'inherit',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  padding: '0 0 0.2rem 0',
+                  outline: 'none',
+                  width: '100%'
+                }}
+              />
+              <span style={{ fontSize: '0.75rem', color: '#888' }}>{currentUser.email}</span>
             </div>
             <em>LEADER</em>
           </div>
