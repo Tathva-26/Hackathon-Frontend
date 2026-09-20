@@ -287,13 +287,23 @@ export default function RegisterPage() {
             </div>
           </div>
           {regInfo?.data?.status === "DRAFT" && (
-            <button
-              type="button"
-              className={styles.primaryButton}
-              onClick={handleEditTeam}
-            >
-              EDIT TEAM DETAILS <span>↗</span>
-            </button>
+            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={handleEditTeam}
+              >
+                EDIT TEAM DETAILS <span>↗</span>
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                disabled
+                style={{ opacity: 0.5, cursor: "not-allowed" }}
+              >
+                PAY NOW <span>↗</span>
+              </button>
+            </div>
           )}
           <div style={{ marginTop: 24 }}>
             <button

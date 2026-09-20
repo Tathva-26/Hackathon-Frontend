@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useAuth } from "./AuthProvider";
 
 export default function Navbar({ variant } = {}) {
   const pathname = usePathname();
   const router = useRouter();
+  const { isRegistered } = useAuth();
 
   const handleSignup = () => {
     router.push("/register");
@@ -33,7 +35,7 @@ export default function Navbar({ variant } = {}) {
           {/* <Link href="/rules">Rules</Link> */}
           <Link href="/faq">FAQ</Link>
           <button className="signup-btn" onClick={handleSignup}>
-            Register
+            {isRegistered ? "Dashboard" : "Register"}
           </button>
         </nav>
       </header>
@@ -77,7 +79,7 @@ export default function Navbar({ variant } = {}) {
           FAQ
         </Link>
         <button className="signup-btn" onClick={handleSignup}>
-          Register
+          {isRegistered ? "Dashboard" : "Register"}
         </button>
       </nav>
     </header>

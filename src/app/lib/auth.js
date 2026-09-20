@@ -62,9 +62,13 @@ export async function exchangeGoogleCredential(credential) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.user) {
-    const err = new Error(data.message || data.hint || data.error || "Google authentication failed.");
-    err.code = data.error;
-    err.hint = data.hint;
+    const errObj = data.error || {};
+    const message = data.message || errObj.message || (typeof errObj === 'string' ? errObj : null) || "Google authentication failed.";
+    const code = errObj.code || (typeof errObj === 'string' ? errObj : null);
+    
+    const err = new Error(message);
+    err.code = code;
+    err.hint = data.hint || errObj.hint;
     err.status = res.status;
     throw err;
   }

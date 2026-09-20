@@ -4,9 +4,11 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./pg1.module.css";
 import Navbar from "./Navbar";
+import { useAuth } from "./AuthProvider";
 
 export default function Pg1() {
   const router = useRouter();
+  const { isRegistered } = useAuth();
   const spacerRef = useRef(null);
   const heroRef = useRef(null);
   const leftHandRef = useRef(null);
@@ -276,7 +278,7 @@ export default function Pg1() {
                   className={styles.button}
                   onClick={() => router.push('/register')}
                 >
-                  REGISTER NOW
+                  {isRegistered ? "DASHBOARD" : "REGISTER NOW"}
                 </button>
                 <button className={styles.button}>SEE SCHEDULE</button>
                 <button
