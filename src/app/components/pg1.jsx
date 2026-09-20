@@ -6,7 +6,79 @@ import styles from "./pg1.module.css";
 import Navbar from "./Navbar";
 import { useAuth } from "./AuthProvider";
 
+
+// ---- Milestone icons ----
+function IconUserPlus() {
+  return (
+    <svg className={styles.milestoneIcon} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <line x1="19" y1="8" x2="19" y2="14" />
+      <line x1="22" y1="11" x2="16" y2="11" />
+    </svg>
+  );
+}
+
+function IconCard() {
+  return (
+    <svg className={styles.milestoneIcon} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <line x1="2" y1="10" x2="22" y2="10" />
+    </svg>
+  );
+}
+
+function IconTerminal() {
+  return (
+    <svg className={styles.milestoneIcon} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+      <polyline points="7 9 10 12 7 15" />
+      <line x1="12" y1="15" x2="17" y2="15" />
+    </svg>
+  );
+}
+
+function IconClipboardCheck() {
+  return (
+    <svg className={styles.milestoneIcon} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <polyline points="9 14 11 16 15 11" />
+    </svg>
+  );
+}
+
+function IconTrophy() {
+  return (
+    <svg className={styles.milestoneIcon} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.45 1-1 1H8a1 1 0 0 0-1 1v1h10v-1a1 1 0 0 0-1-1h-1a1 1 0 0 1-1-1v-2.34" />
+      <path d="M6 4h12a2 2 0 0 1 2 2v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2Z" />
+    </svg>
+  );
+}
+
+const MILESTONES = [
+  { date: "SEP 20", phase: "PHASE 01", title: "Pre-Registration", desc: "Portal Opens", Icon: IconUserPlus },
+  { date: "TBI", phase: "PHASE 02", title: "Registration & Fee", desc: "Payment Window", Icon: IconCard },
+  { date: "TBI", phase: "PHASE 03", title: "Online Prelims", desc: "Round 1", Icon: IconTerminal },
+  { date: "OCT 1", phase: "PHASE 04", title: "Prelims Result", desc: "Shortlist Published", Icon: IconClipboardCheck },
+  { date: "OCT 09", phase: "PHASE 05", title: "Final Round", desc: "@ NIT Calicut Campus", Icon: IconTrophy },
+];
+
 export default function Pg1() {
+
+  const handleSeeSchedule = () => {
+    if (spacerRef.current) {
+      const total = spacerRef.current.offsetHeight - window.innerHeight;
+      window.scrollTo({ top: spacerRef.current.offsetTop + total * 0.6666, behavior: 'smooth' });
+    }
+  };
+
   const router = useRouter();
   const { isRegistered } = useAuth();
   const spacerRef = useRef(null);
@@ -18,6 +90,7 @@ export default function Pg1() {
   const dateRef = useRef(null);
   const preRegRef = useRef(null);
   const aboutCardRef = useRef(null);
+  const timelineCardRef = useRef(null);
   const sponsorsCardRef = useRef(null);
   const heroLogoRef = useRef(null);
   const homeNavRef = useRef(null);
@@ -73,34 +146,15 @@ export default function Pg1() {
       const total = spacer.offsetHeight - window.innerHeight;
       const scrolled = -rect.top;
 
-      const holdPoint = 0.50 * total;
-
-      // Trap going DOWN (Hero -> About)
-      if (scrolled >= holdPoint && lastScrolled < holdPoint && gestureActive) {
-        isLocked = true;
-        setTimeout(() => { isLocked = false; }, 800); // 800ms absolute trackpad momentum release
-        if (typeof window !== 'undefined' && window.innerWidth <= 640) document.body.style.overflow = 'hidden';
-        window.scrollTo({ top: window.scrollY + rect.top + holdPoint });
-      }
-
-      // Trap going UP (Sponsors -> About)
-      if (scrolled <= holdPoint && lastScrolled > holdPoint && gestureActive) {
-        isLocked = true;
-        setTimeout(() => { isLocked = false; }, 800); // 800ms absolute trackpad momentum release
-        if (typeof window !== 'undefined' && window.innerWidth <= 640) document.body.style.overflow = 'hidden';
-        window.scrollTo({ top: window.scrollY + rect.top + holdPoint });
-      }
+      const holdPoint1 = 0.3333 * total;
+      const holdPoint2 = 0.6666 * total;
 
       lastScrolled = scrolled;
 
-      // `progress` scales automatically exactly to the component's CSS scroll coordinates!
       const progress = clamp(total > 0 ? scrolled / total : 0, 0, 1);
-
-      // Phase 1 (0 to 0.50 of total scroll) maps exactly against original sizing specs
-      const progress1 = clamp(progress / 0.50, 0, 1);
-
-      // Phase 2 (0.50 to 1.0 of total scroll) handles the injected Sponsors screen
-      const progress2 = clamp((progress - 0.50) / 0.50, 0, 1);
+      const progress1 = clamp(progress / 0.3333, 0, 1);
+      const progress2 = clamp((progress - 0.3333) / 0.3333, 0, 1);
+      const progress3 = clamp((progress - 0.6666) / 0.3333, 0, 1);
 
       // --- hands: enlarge + fade earlier so they don't block About ---
       const handScale = 1 + progress1 * 0.7;
@@ -144,6 +198,7 @@ export default function Pg1() {
       }
 
       // --- About card / logo: fade + rise in for the last stretch ---
+      // About card
       const aboutProgress = clamp((progress1 - 0.4) / 0.6, 0, 1);
       const aboutFadeOut = clamp(progress2 / 0.4, 0, 1);
       const aboutFinalOpacity = aboutProgress - aboutFadeOut;
@@ -154,8 +209,18 @@ export default function Pg1() {
         aboutCardRef.current.style.pointerEvents = aboutFinalOpacity > 0.5 ? "auto" : "none";
       }
 
-      // --- Sponsors card: fade + rise in
-      const sponsorsIn = clamp((progress2 - 0.4) / 0.6, 0, 1);
+      // Timeline card
+      const timelineIn = clamp((progress2 - 0.4) / 0.6, 0, 1);
+      const timelineFadeOut = clamp(progress3 / 0.4, 0, 1);
+      const timelineFinalOpacity = timelineIn - timelineFadeOut;
+      if (timelineCardRef.current) {
+        timelineCardRef.current.style.opacity = timelineFinalOpacity;
+        timelineCardRef.current.style.transform = `translateY(${50 * (1 - timelineIn) + 50 * timelineFadeOut}px) scale(${0.95 + 0.05 * timelineIn - 0.05 * timelineFadeOut})`;
+        timelineCardRef.current.style.pointerEvents = timelineFinalOpacity > 0.5 ? "auto" : "none";
+      }
+
+      // Sponsors card
+      const sponsorsIn = clamp((progress3 - 0.4) / 0.6, 0, 1);
       if (sponsorsCardRef.current) {
         sponsorsCardRef.current.style.opacity = sponsorsIn;
         sponsorsCardRef.current.style.transform = `translateY(${50 * (1 - sponsorsIn)}px) scale(${0.95 + 0.05 * sponsorsIn})`;
@@ -280,13 +345,42 @@ export default function Pg1() {
                 >
                   {isRegistered ? "DASHBOARD" : "REGISTER NOW"}
                 </button>
-                <button className={styles.button}>SEE SCHEDULE</button>
+                <button className={styles.button} onClick={handleSeeSchedule}>SEE SCHEDULE</button>
                 <button
                   className={styles.button}
                   onClick={() => window.open('https://drive.google.com/file/d/1KYHz6SLjkVGrVMKwMLxXaYrxqvZnnBr-/view', '_blank', 'noopener,noreferrer')}
                 >
                   VIEW BROCHURE
                 </button>
+              </div>
+            </div>
+          </div>
+
+          
+          {/* ---------- TIMELINE & MILESTONES ---------- */}
+          <div className={`${styles.aboutWrap} mb-25 lg:mt-15`}>
+            <div
+              className={`prize-card-container ${styles.card} ${styles.timelineCardWrapper}`}
+              ref={timelineCardRef}
+              style={{ opacity: 0, pointerEvents: "none" }}
+            >
+              <span className={styles.pill}>TIMELINE &amp; MILESTONES</span>
+              <p className={styles.timelineIntro}>
+                {'// Roadmap to Innovation'} • Tathva &apos;26 Flagship Hackathon
+              </p>
+              <div className={styles.timeline}>
+                <div className={styles.timelineLine}></div>
+                {MILESTONES.map(({ date, phase, title, desc, Icon }) => (
+                  <div className={styles.milestone} key={phase}>
+                    <div className={styles.milestoneDate}>{date}</div>
+                    <div className={styles.milestoneNode}>
+                      <Icon />
+                    </div>
+                    <span className={styles.milestonePhase}>{phase}</span>
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
