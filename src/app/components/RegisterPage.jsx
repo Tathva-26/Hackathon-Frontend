@@ -437,30 +437,21 @@ export default function RegisterPage() {
             <div className={styles.avatar}>
               {currentUser.name?.charAt(0).toUpperCase()}
             </div>
-            <div style={{ display: 'grid', gap: '0.4rem', flex: 1 }}>
-              <input
-                type="text"
-                value={leaderName}
-                onChange={(e) => setLeaderName(e.target.value)}
-                placeholder="Leader Name"
-                maxLength={80}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  borderBottom: '1px solid #333',
-                  color: '#fff',
-                  font: 'inherit',
-                  fontSize: '0.95rem',
-                  fontWeight: '600',
-                  padding: '0 0 0.2rem 0',
-                  outline: 'none',
-                  width: '100%'
-                }}
-              />
-              <span style={{ fontSize: '0.75rem', color: '#888' }}>{currentUser.email}</span>
+            <div>
+              <span>{currentUser.email}</span>
             </div>
             <em>LEADER</em>
           </div>
+          <label>
+            LEADER NAME
+            <input
+              type="text"
+              value={leaderName}
+              onChange={(e) => setLeaderName(e.target.value)}
+              placeholder="Leader Name"
+              maxLength={80}
+            />
+          </label>
           <label>
             PHONE NUMBER
             <input
