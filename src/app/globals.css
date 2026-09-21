@@ -442,6 +442,28 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  .navbar-home .logo-brand,
+  .navbar-home .logo-brand:hover,
+  .navbar-home .logo-brand:active {
+    display: none !important;
+  }
+
+  .navbar-home .brand-title {
+    display: none !important;
+  }
+
+  .navbar-home .nav-actions {
+    top: 18px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    gap: 14px;
+    width: max-content;
+    max-width: 96%;
+  }
+}
+
 @media (max-width: 480px) {
   .hero {
     height: 100svh;
@@ -449,35 +471,27 @@ body {
   }
 
   .navbar-home {
-    height: 110px;
+    height: 80px;
   }
 
   .navbar-home .logo-brand,
   .navbar-home .logo-brand:hover,
   .navbar-home .logo-brand:active {
-    position: absolute;
-    top: 15px;
-    left: 0.2%;
-    transform: none !important;
+    display: none !important;
   }
 
   .navbar-home .brand-title {
-    position: fixed;
-    top: 11svh;
-    left: 50%;
-    transform: translateX(-50%) !important;
-    width: 100%;
-    text-align: center;
-    font-size: 15px;
-    pointer-events: none;
+    display: none !important;
   }
 
   .navbar-home .nav-actions {
-    top: 20px;
-    right: 40%;
-    transform: translateX(50%);
-    gap: 12px;
-    width: auto;
+    top: 18px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    gap: 10px;
+    width: max-content;
+    max-width: 98%;
   }
 
   .decor-left {

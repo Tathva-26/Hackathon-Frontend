@@ -227,26 +227,32 @@ export default function Pg1() {
         sponsorsCardRef.current.style.pointerEvents = sponsorsIn > 0.5 ? "auto" : "none";
       }
 
-      // --- Home navbar logo fade-in: perfectly synced with About page ---
+      // --- Home navbar logo fade-in: perfectly synced with About page (desktop only) ---
       const navLogo = document.getElementById("navbar-home-logo");
       if (navLogo) {
-        navLogo.style.opacity = aboutProgress;
-        navLogo.style.pointerEvents = aboutProgress > 0.15 ? "auto" : "none";
+        if (typeof window !== 'undefined' && window.innerWidth > 768) {
+          navLogo.style.opacity = aboutProgress;
+          navLogo.style.pointerEvents = aboutProgress > 0.15 ? "auto" : "none";
+        } else {
+          navLogo.style.opacity = "0";
+          navLogo.style.pointerEvents = "none";
+        }
       }
 
-
-
-      // Hero stops intercepting clicks once mostly faded out
+      // Hero stops intercepting clicks once mostly faded out and fades out entirely
       if (heroRef.current) {
         heroRef.current.style.pointerEvents = progress1 > 0.6 ? "none" : "auto";
+        heroRef.current.style.opacity = clamp(1 - progress1 * 1.5, 0, 1);
       }
     }
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('wheel', handleWheel);
@@ -258,6 +264,11 @@ export default function Pg1() {
       if (homeNavRef.current) {
         homeNavRef.current.style.opacity = "";
         homeNavRef.current.style.pointerEvents = "";
+      }
+      const navLogo = document.getElementById("navbar-home-logo");
+      if (navLogo) {
+        navLogo.style.opacity = "";
+        navLogo.style.pointerEvents = "";
       }
     };
   }, []);
