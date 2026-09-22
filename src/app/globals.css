@@ -20,7 +20,8 @@
   }
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -70,12 +71,25 @@ html, body {
   filter: brightness(1.05);
 }
 
+@keyframes customFloat {
+
+  0%,
+  100% {
+    translate: 0px 0px;
+  }
+
+  50% {
+    translate: 0px -25px;
+  }
+}
+
 .decor-left {
   width: 35vw;
   max-width: 415px;
   left: -3vw;
   top: -1vh;
   transform: rotate(18deg);
+  animation: customFloat 6s ease-in-out infinite;
 }
 
 .decor-right {
@@ -84,13 +98,16 @@ html, body {
   right: -5vw;
   bottom: 1vh;
   transform: rotate(20deg);
+  animation: customFloat 6s ease-in-out infinite -3s;
+  /* Perfectly inverse bounce */
 }
 
 .decor-top-right {
   width: 30vw;
   max-width: 420px;
   right: -4vw;
-  top: -20vh;      /* was -24vh */
+  top: -20vh;
+  /* was -24vh */
   opacity: 0.2;
   z-index: 1;
 }
@@ -99,7 +116,8 @@ html, body {
   width: 40vw;
   max-width: 600px;
   left: -8vw;
-  bottom: -25vh;   /* was -20vh */
+  bottom: -25vh;
+  /* was -20vh */
   opacity: 0.35;
   z-index: 1;
 }
@@ -136,11 +154,13 @@ html, body {
 
 .logo {
   position: absolute;
-  top: 24px;       /* moved closer to top edge, was 24px */
+  top: 24px;
+  /* moved closer to top edge, was 24px */
   left: 50%;
   transform: translateX(-50%);
   display: block;
-  height: 170px;     /* smaller size, was 200px via .logo img */
+  height: 170px;
+  /* smaller size, was 200px via .logo img */
   width: auto;
   object-fit: contain;
 }
@@ -152,6 +172,12 @@ html, body {
 }
 
 
+
+.navbar-home .logo-brand {
+  position: absolute;
+  top: 14px;
+  left: 2.5%;
+}
 
 /* Inner Pages Navbar (Prizes Page Layout - Uniform Positioning) */
 .navbar-inner {
@@ -296,6 +322,60 @@ html, body {
   text-align: center;
 }
 
+.pre-reg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.pre-reg-badge:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+}
+
+.pre-reg-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
 /* =========================
    RESPONSIVE
 ========================= */
@@ -344,6 +424,12 @@ html, body {
     font-size: 20px;
   }
 
+  .pre-reg-badge {
+    font-size: 13px;
+    padding: 8px 20px;
+    margin-top: 20px;
+  }
+
   .decor-left {
     width: 42vw;
   }
@@ -351,22 +437,64 @@ html, body {
   .decor-right {
     width: 34vw;
   }
+
+  .logo {
+    top: 25svh;
+    height: 115px !important;
+    width: auto;
+  }
 }
 
 @media (max-width: 480px) {
+  .hero {
+    height: 100svh;
+    min-height: 100svh;
+  }
+
   .navbar-home {
     height: 110px;
   }
 
-  .logo img {
-    height: 38px;
+  .navbar-home .logo-brand,
+  .navbar-home .logo-brand:hover,
+  .navbar-home .logo-brand:active {
+    position: absolute;
+    top: 15px;
+    left: 0.2%;
+    transform: none !important;
+  }
+
+  .navbar-home .brand-title {
+    position: fixed;
+    top: 11svh;
+    left: 50%;
+    transform: translateX(-50%) !important;
+    width: 100%;
+    text-align: center;
+    font-size: 15px;
+    pointer-events: none;
   }
 
   .navbar-home .nav-actions {
-    top: 72px;
-    right: 50%;
+    top: 20px;
+    right: 40%;
     transform: translateX(50%);
     gap: 12px;
+    width: auto;
+  }
+
+  .decor-left {
+    width: 55vw;
+    max-width: 250px;
+    top: -0.1svh;
+    left: -15vw;
+  }
+
+  .decor-right {
+    width: 60vw;
+    max-width: 250px;
+    bottom: -0.01svh;
+    right: -12vw;
   }
 
   .navbar-inner {
@@ -416,6 +544,12 @@ html, body {
   .date {
     font-size: 16px;
   }
+
+  .pre-reg-badge {
+    font-size: 12px;
+    padding: 7px 16px;
+    margin-top: 16px;
+  }
 }
 
 /* =========================
@@ -430,6 +564,7 @@ html, body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -446,13 +581,16 @@ html, body {
 
 /* Hide all scrollbars globally across browsers */
 * {
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
 }
 
 *::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  display: none !important; /* Chrome, Safari, Opera */
+  display: none !important;
+  /* Chrome, Safari, Opera */
   width: 0 !important;
   height: 0 !important;
 }
@@ -784,12 +922,15 @@ html, body {
   padding: 4px 8px;
 
   /* Hides inner scrollbar visual track completely to prevent double scrollbars */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
 }
 
 .faq-list-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
 .faq-item-wrapper {
@@ -874,6 +1015,7 @@ html, body {
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

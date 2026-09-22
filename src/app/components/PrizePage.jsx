@@ -44,7 +44,7 @@ export default function PrizePage() {
         {/* Main 1st, 2nd, 3rd Prize Podiums Graphic */}
         <div className="prize-podium-wrapper">
           <img
-            src="/assets/prize.png"
+            src="/assets/prize_updated.png"
             className="prize-podium-img"
             alt="1st, 2nd, 3rd Prize Money Podium"
           />
