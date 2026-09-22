@@ -397,7 +397,7 @@ export default function Pg1() {
           </div>
 
           {/* ---------- SPONSORS ---------- */}
-          <div className={`${styles.spWrap} mt-15`}>
+          <div className={`${styles.spWrap} lg:mt-15`}>
             <div
               ref={sponsorsCardRef}
               className={`${styles.sponsorsCardWrapper}`}
@@ -429,10 +429,10 @@ export default function Pg1() {
                 </div>
 
                 {/* Contacts Info */}
-                <div style={{ marginTop: '24px', paddingBottom: '12px', textAlign: 'center', fontFamily: '"Inter", sans-serif', fontSize: '15px', color: 'rgba(255, 255, 255, 0.9)' }}>
-                  <p style={{ margin: '6px 0' }}>Interested in partnering with us?<br/>reach out to us at:</p>
-                  <p style={{ margin: '6px 0' }}>Contact: +91 9188590540</p>
-                  <p style={{ margin: '6px 0' }}>Email: rahan10749@gmail.com</p>
+                <div className={styles.sponsorsContact}>
+                  <p>Interested in partnering with us?<br/>reach out to us at:</p>
+                  <p>Contact: +91 9188590540</p>
+                  <p>Email: rahan10749@gmail.com</p>
                 </div>
               </div>
             </div>

@@ -442,6 +442,35 @@ body {
   }
 }
 
+/* =========================
+   CSS SCROLL-DRIVEN ANIMATIONS
+========================= */
+@keyframes cssScrollDisappear {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px);
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+@keyframes heroDisappear {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar-home .logo-brand,
   .navbar-home .logo-brand:hover,
@@ -461,6 +490,57 @@ body {
     gap: 14px;
     width: max-content;
     max-width: 96%;
+  }
+
+  /* CSS Scroll-Driven method: TatHack text and logo disappear when scrolling on mobile */
+  .hero {
+    animation: heroDisappear linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 45svh;
+  }
+
+  .hero .logo,
+  .hero .title,
+  .hero-content,
+  .hero .presents,
+  .hero .date,
+  .hero .pre-reg-badge {
+    animation: cssScrollDisappear linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 30svh;
+  }
+
+  .hero .decor,
+  .hero .hand-glow {
+    animation: heroDisappear linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 25svh;
+  }
+
+  /* Sponsors Mobile Adjustments: compact and well-aligned */
+  .sponsors-content-wrapper {
+    margin-top: 10px;
+  }
+
+  .sponsors-subtext {
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
+
+  .sponsors-placeholder-grid {
+    gap: 10px;
+  }
+
+  .sponsor-box {
+    padding: 12px 20px;
+    min-width: 200px;
+    width: 90%;
+    max-width: 280px;
+    gap: 6px;
+  }
+
+  .sponsor-slot {
+    font-size: 13px;
   }
 }
 
