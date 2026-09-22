@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { clearSession, fetchSessionUser, loadSession, saveSession } from "../lib/auth";
+import { clearSession, fetchSessionUser, loadSession, saveSession, fetchMyRegistration } from "../lib/auth";
 
 const AuthContext = createContext(null);
 
@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState("");
   const [status, setStatus] = useState("loading"); // loading | authenticated | unauthenticated
   const [error, setError] = useState("");
+  const [isRegistered, setIsRegistered] = useState(false);
 
   // Restore session on page reload and validate it against GET /api/auth/me.
   useEffect(() => {
@@ -25,6 +26,10 @@ export function AuthProvider({ children }) {
       .then((freshUser) => {
         setUser(freshUser);
         saveSession(savedToken, freshUser);
+        return fetchMyRegistration(savedToken);
+      })
+      .then((regData) => {
+        setIsRegistered(Boolean(regData.registered && regData.status));
       })
       .catch(() => {
         // Our JWT expired/invalid -> force re-login instead of silent failures later.
@@ -32,6 +37,7 @@ export function AuthProvider({ children }) {
         setToken("");
         setUser(null);
         setStatus("unauthenticated");
+        setIsRegistered(false);
       });
   }, []);
 
@@ -41,6 +47,9 @@ export function AuthProvider({ children }) {
     setUser(newUser);
     setError("");
     setStatus("authenticated");
+    fetchMyRegistration(newToken)
+      .then(regData => setIsRegistered(Boolean(regData.registered && regData.status)))
+      .catch(() => setIsRegistered(false));
   }, []);
 
   const logout = useCallback(() => {
@@ -48,11 +57,12 @@ export function AuthProvider({ children }) {
     setToken("");
     setUser(null);
     setStatus("unauthenticated");
+    setIsRegistered(false);
   }, []);
 
   const value = useMemo(
-    () => ({ user, token, status, error, setError, login, logout }),
-    [user, token, status, error, login, logout]
+    () => ({ user, token, status, error, isRegistered, setIsRegistered, setError, login, logout }),
+    [user, token, status, error, isRegistered, login, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

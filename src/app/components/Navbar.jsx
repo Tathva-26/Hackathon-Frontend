@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useAuth } from "./AuthProvider";
 
 export default function Navbar({ variant } = {}) {
   const pathname = usePathname();
   const router = useRouter();
+  const { isRegistered } = useAuth();
 
   const handleSignup = () => {
     router.push("/register");
@@ -19,13 +21,21 @@ export default function Navbar({ variant } = {}) {
   if (isHome) {
     return (
       <header className="navbar navbar-home">
+        <Link href="/" className="logo-brand" id="navbar-home-logo" style={{ opacity: 0, pointerEvents: "none" }}>
+          <img
+            src="/assets/tathva.png"
+            alt="Tathva '26 NIT Calicut"
+            className="logo-img"
+          />
+          <span className="brand-title">TatHack &apos;26</span>
+        </Link>
         <nav className="nav-actions" aria-label="Event navigation">
           <Link href="/prizes">Prizes</Link>
-          <Link href="/sponsors">Sponsors</Link>
-          <Link href="/rules">Rules</Link>
+          <Link href="/#sponsors">Sponsors</Link>
+          {/* <Link href="/rules">Rules</Link> */}
           <Link href="/faq">FAQ</Link>
           <button className="signup-btn" onClick={handleSignup}>
-            Register
+            {isRegistered ? "Dashboard" : "Register"}
           </button>
         </nav>
       </header>
@@ -51,17 +61,17 @@ export default function Navbar({ variant } = {}) {
           Prizes
         </Link>
         <Link
-          href="/sponsors"
-          className={pathname === "/sponsors" ? "nav-link active" : "nav-link"}
+          href="/#sponsors"
+          className="nav-link"
         >
           Sponsors
         </Link>
-        <Link
+        {/* <Link
           href="/rules"
           className={pathname === "/rules" ? "nav-link active" : "nav-link"}
         >
           Rules
-        </Link>
+        </Link> */}
         <Link
           href="/faq"
           className={pathname === "/faq" ? "nav-link active" : "nav-link"}
@@ -69,7 +79,7 @@ export default function Navbar({ variant } = {}) {
           FAQ
         </Link>
         <button className="signup-btn" onClick={handleSignup}>
-          Register
+          {isRegistered ? "Dashboard" : "Register"}
         </button>
       </nav>
     </header>
