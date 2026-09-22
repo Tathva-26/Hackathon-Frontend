@@ -81,7 +81,7 @@ export default function AdminPanel() {
   const query = useMemo(() => {
     const params = new URLSearchParams({
       page: String(pagination.page),
-      limit: "20",
+      limit: "100",
     });
     Object.entries(filters).forEach(
       ([key, value]) => value && params.set(key, value),
@@ -98,23 +98,18 @@ export default function AdminPanel() {
     adminRequest(`/${resource}?${query}`, {}, token)
       .then((payload) => {
         if (cancelled) return;
+        const metadata = payload?.pagination || payload?.meta || payload || {};
+        const total =
+          metadata.total ?? metadata.totalItems ?? metadata.totalCount;
+        const limit = metadata.limit || 100;
+        const explicitTotalPages = metadata.totalPages || metadata.pages;
         setItems(listFrom(payload));
         setPagination((current) => ({
           ...current,
-          ...(payload?.pagination || {}),
-          total:
-            payload?.pagination?.total ??
-            payload?.pagination?.totalItems ??
-            listFrom(payload).length,
-          totalPages: (() => {
-            const metadata = payload?.pagination || {};
-            if (metadata.totalPages || metadata.pages) {
-              return metadata.totalPages || metadata.pages;
-            }
-            const total = metadata.total ?? metadata.totalItems;
-            const limit = metadata.limit || 20;
-            return total ? Math.ceil(total / limit) : 1;
-          })(),
+          ...(payload?.pagination || payload?.meta || {}),
+          total: total ?? listFrom(payload).length,
+          totalPages:
+            explicitTotalPages || (total ? Math.ceil(total / limit) : 1),
         }));
       })
       .catch((requestError) => {
@@ -592,7 +587,9 @@ function ResourceView({
           >
             &lt;
           </button>
-          <strong>Page {pagination.page}</strong>
+          <strong>
+            Page {pagination.page} of {pagination.totalPages || 1}
+          </strong>
           <button
             disabled={pagination.page >= (pagination.totalPages || 1)}
             onClick={() =>
