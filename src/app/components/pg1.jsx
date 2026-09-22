@@ -348,7 +348,7 @@ export default function Pg1() {
                 <button className={styles.button} onClick={handleSeeSchedule}>SEE SCHEDULE</button>
                 <button
                   className={styles.button}
-                  onClick={() => window.open('https://drive.google.com/file/d/1KYHz6SLjkVGrVMKwMLxXaYrxqvZnnBr-/view', '_blank', 'noopener,noreferrer')}
+                  onClick={() => window.open('https://drive.google.com/file/d/1Y0Yv1XF1Ys77En8OvYZhAgV5oL2QueYp/view?usp=drive_link', '_blank', 'noopener,noreferrer')}
                 >
                   VIEW BROCHURE
                 </button>
