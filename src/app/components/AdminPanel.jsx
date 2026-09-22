@@ -102,12 +102,19 @@ export default function AdminPanel() {
         setPagination((current) => ({
           ...current,
           ...(payload?.pagination || {}),
-          totalPages:
-            payload?.pagination?.totalPages || payload?.pagination?.pages || 1,
           total:
             payload?.pagination?.total ??
             payload?.pagination?.totalItems ??
             listFrom(payload).length,
+          totalPages: (() => {
+            const metadata = payload?.pagination || {};
+            if (metadata.totalPages || metadata.pages) {
+              return metadata.totalPages || metadata.pages;
+            }
+            const total = metadata.total ?? metadata.totalItems;
+            const limit = metadata.limit || 20;
+            return total ? Math.ceil(total / limit) : 1;
+          })(),
         }));
       })
       .catch((requestError) => {
