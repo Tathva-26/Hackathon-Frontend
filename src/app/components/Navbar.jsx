@@ -18,6 +18,8 @@ export default function Navbar({ variant } = {}) {
   const isHome = variant ? variant === "home" : pathname === "/";
   const isPrizesActive = pathname === "/prizes" || pathname === "/prize";
 
+  if (pathname.startsWith("/admin")) return null;
+
   if (isHome) {
     return (
       <header className="navbar navbar-home">
