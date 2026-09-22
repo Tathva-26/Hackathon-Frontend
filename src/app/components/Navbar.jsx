@@ -23,7 +23,12 @@ export default function Navbar({ variant } = {}) {
   if (isHome) {
     return (
       <header className="navbar navbar-home">
-        <Link href="/" className="logo-brand" id="navbar-home-logo" style={{ opacity: 0, pointerEvents: "none" }}>
+        <Link
+          href="/"
+          className="logo-brand"
+          id="navbar-home-logo"
+          style={{ opacity: 0, pointerEvents: "none" }}
+        >
           <img
             src="/assets/tathva.png"
             alt="Tathva '26 NIT Calicut"
@@ -62,10 +67,7 @@ export default function Navbar({ variant } = {}) {
         >
           Prizes
         </Link>
-        <Link
-          href="/#sponsors"
-          className="nav-link"
-        >
+        <Link href="/#sponsors" className="nav-link">
           Sponsors
         </Link>
         {/* <Link
