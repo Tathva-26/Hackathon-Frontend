@@ -439,6 +439,11 @@ body {
     top: 25svh;
     height: 115px !important;
     width: auto;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    transform: none;
   }
 }
 
