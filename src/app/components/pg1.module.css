@@ -136,9 +136,8 @@
 
 /* ============ SCROLL STAGE (appended) ============ */
 .scrollSpacer {
-	position: relative;
-	height: 480svh;
-	/* total scroll distance for hero → about → sponsors transition */
+  position: relative;
+  height: 160vh; /* total scroll distance for hero → about transition */
 }
 
 .stickyStage {
