@@ -24,7 +24,7 @@ export default function PrizePage() {
       <div className="prize-card-container">
         {/* Top Center Prize Badge */}
         <div className="prize-pill-badge">
-          <span>PRIZE</span>
+          <span>PRIZES</span>
         </div>
 
         {/* Top Right Circular Text Ring & Diamond Star */}
