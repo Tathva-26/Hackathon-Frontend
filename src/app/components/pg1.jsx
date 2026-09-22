@@ -227,26 +227,32 @@ export default function Pg1() {
         sponsorsCardRef.current.style.pointerEvents = sponsorsIn > 0.5 ? "auto" : "none";
       }
 
-      // --- Home navbar logo fade-in: perfectly synced with About page ---
+      // --- Home navbar logo fade-in: perfectly synced with About page (desktop only) ---
       const navLogo = document.getElementById("navbar-home-logo");
       if (navLogo) {
-        navLogo.style.opacity = aboutProgress;
-        navLogo.style.pointerEvents = aboutProgress > 0.15 ? "auto" : "none";
+        if (typeof window !== 'undefined' && window.innerWidth > 768) {
+          navLogo.style.opacity = aboutProgress;
+          navLogo.style.pointerEvents = aboutProgress > 0.15 ? "auto" : "none";
+        } else {
+          navLogo.style.opacity = "0";
+          navLogo.style.pointerEvents = "none";
+        }
       }
 
-
-
-      // Hero stops intercepting clicks once mostly faded out
+      // Hero stops intercepting clicks once mostly faded out and fades out entirely
       if (heroRef.current) {
         heroRef.current.style.pointerEvents = progress1 > 0.6 ? "none" : "auto";
+        heroRef.current.style.opacity = clamp(1 - progress1 * 1.5, 0, 1);
       }
     }
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('wheel', handleWheel);
@@ -258,6 +264,11 @@ export default function Pg1() {
       if (homeNavRef.current) {
         homeNavRef.current.style.opacity = "";
         homeNavRef.current.style.pointerEvents = "";
+      }
+      const navLogo = document.getElementById("navbar-home-logo");
+      if (navLogo) {
+        navLogo.style.opacity = "";
+        navLogo.style.pointerEvents = "";
       }
     };
   }, []);
@@ -386,7 +397,7 @@ export default function Pg1() {
           </div>
 
           {/* ---------- SPONSORS ---------- */}
-          <div className={`${styles.spWrap} mt-15`}>
+          <div className={`${styles.spWrap} lg:mt-15`}>
             <div
               ref={sponsorsCardRef}
               className={`${styles.sponsorsCardWrapper}`}
@@ -418,10 +429,10 @@ export default function Pg1() {
                 </div>
 
                 {/* Contacts Info */}
-                <div style={{ marginTop: '24px', paddingBottom: '12px', textAlign: 'center', fontFamily: '"Inter", sans-serif', fontSize: '15px', color: 'rgba(255, 255, 255, 0.9)' }}>
-                  <p style={{ margin: '6px 0' }}>Interested in partnering with us?<br/>reach out to us at:</p>
-                  <p style={{ margin: '6px 0' }}>Contact: +91 9188590540</p>
-                  <p style={{ margin: '6px 0' }}>Email: rahan10749@gmail.com</p>
+                <div className={styles.sponsorsContact}>
+                  <p>Interested in partnering with us?<br/>reach out to us at:</p>
+                  <p>Contact: +91 9188590540</p>
+                  <p>Email: rahan10749@gmail.com</p>
                 </div>
               </div>
             </div>

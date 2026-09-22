@@ -439,6 +439,113 @@ body {
     top: 25svh;
     height: 115px !important;
     width: auto;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    transform: none;
+  }
+}
+
+/* =========================
+   CSS SCROLL-DRIVEN ANIMATIONS
+========================= */
+@keyframes cssScrollDisappear {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px);
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+@keyframes heroDisappear {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-home .logo-brand,
+  .navbar-home .logo-brand:hover,
+  .navbar-home .logo-brand:active {
+    display: none !important;
+  }
+
+  .navbar-home .brand-title {
+    display: none !important;
+  }
+
+  .navbar-home .nav-actions {
+    top: 18px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    gap: 14px;
+    width: max-content;
+    max-width: 96%;
+  }
+
+  /* CSS Scroll-Driven method: TatHack text and logo disappear when scrolling on mobile */
+  .hero {
+    animation: heroDisappear linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 45svh;
+  }
+
+  .hero .logo,
+  .hero .title,
+  .hero-content,
+  .hero .presents,
+  .hero .date,
+  .hero .pre-reg-badge {
+    animation: cssScrollDisappear linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 30svh;
+  }
+
+  .hero .decor,
+  .hero .hand-glow {
+    animation: heroDisappear linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 25svh;
+  }
+
+  /* Sponsors Mobile Adjustments: compact and well-aligned */
+  .sponsors-content-wrapper {
+    margin-top: 10px;
+  }
+
+  .sponsors-subtext {
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
+
+  .sponsors-placeholder-grid {
+    gap: 10px;
+  }
+
+  .sponsor-box {
+    padding: 12px 20px;
+    min-width: 200px;
+    width: 90%;
+    max-width: 280px;
+    gap: 6px;
+  }
+
+  .sponsor-slot {
+    font-size: 13px;
   }
 }
 
@@ -449,35 +556,27 @@ body {
   }
 
   .navbar-home {
-    height: 110px;
+    height: 80px;
   }
 
   .navbar-home .logo-brand,
   .navbar-home .logo-brand:hover,
   .navbar-home .logo-brand:active {
-    position: absolute;
-    top: 15px;
-    left: 0.2%;
-    transform: none !important;
+    display: none !important;
   }
 
   .navbar-home .brand-title {
-    position: fixed;
-    top: 11svh;
-    left: 50%;
-    transform: translateX(-50%) !important;
-    width: 100%;
-    text-align: center;
-    font-size: 15px;
-    pointer-events: none;
+    display: none !important;
   }
 
   .navbar-home .nav-actions {
-    top: 20px;
-    right: 40%;
-    transform: translateX(50%);
-    gap: 12px;
-    width: auto;
+    top: 18px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    gap: 10px;
+    width: max-content;
+    max-width: 98%;
   }
 
   .decor-left {

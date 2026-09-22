@@ -260,11 +260,17 @@
 	outline-offset: 3px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
 	.aboutWrap {
-		align-items: center;
+		align-items: flex-start;
 		justify-content: center;
-		padding-top: 10svh;
+		padding-top: 75px;
+	}
+
+	.spWrap {
+		align-items: flex-start;
+		justify-content: center;
+		padding-top: 75px;
 	}
 
 	.logo {
@@ -277,9 +283,10 @@
 	}
 
 	.card {
-		padding: 24px 12px 18px;
+		padding: 20px 14px 18px;
 		min-height: auto;
 		width: 95%;
+		max-width: 440px;
 		border: 1.5px solid rgba(255, 255, 255, 0.25);
 		border-radius: 24px;
 		display: flex;
@@ -350,7 +357,7 @@
 	/* Moves the about box UP in desktop view */
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
 	.hero {
 		padding-inline: 1rem;
 	}
@@ -381,13 +388,40 @@
 	}
 
 	.sponsorsCardWrapper {
-		margin-top: 2svh;
-		/* Keeps the spacing on mobile Sponsors strictly */
+		margin-top: 0;
 	}
 
 	.aboutCardWrapper {
-		margin-top: 15svh;
-		/* Independent distance only for About dropping it below TatHack */
+		margin-top: 0;
+	}
+
+	.timelineCardWrapper {
+		margin-top: 0;
+	}
+}
+
+.sponsorsContact {
+	margin-top: 24px;
+	padding-bottom: 12px;
+	text-align: center;
+	font-family: "Inter", sans-serif;
+	font-size: 15px;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.sponsorsContact p {
+	margin: 6px 0;
+}
+
+@media (max-width: 768px) {
+	.sponsorsContact {
+		margin-top: 14px;
+		padding-bottom: 6px;
+		font-size: 13px;
+	}
+
+	.sponsorsContact p {
+		margin: 3px 0;
 	}
 }
 /* --- TIMELINE --- */
@@ -490,15 +524,16 @@
     margin-top: -6svh;
 }
 
-@media (max-width: 640px) {
-	.timelineIntro { margin-bottom: 24px; font-size: 0.72rem; }
-	.timeline { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 28px; padding: 0; }
+@media (max-width: 768px) {
+	.timelineIntro { margin-bottom: 16px; font-size: 0.72rem; }
+	.timeline { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 16px; padding: 0; }
 	.timelineLine { top: 1.25rem; right: auto; bottom: 1.25rem; left: 0.75rem; border-top: 0; border-left: 2px dotted rgba(255, 255, 255, 0.3); }
-	.milestone { display: grid; grid-template-columns: 3rem 1fr; grid-template-rows: auto auto auto; column-gap: 0.85rem; align-items: center; text-align: left; }
-	.milestoneDate { grid-column: 2; grid-row: 1; justify-self: start; }
-	.milestoneNode { grid-column: 1; grid-row: 1 / span 3; margin: 0 auto; }
-	.milestonePhase { grid-column: 2; grid-row: 2; margin: 0.35rem 0 0; }
-	.milestone h3 { grid-column: 2; grid-row: 3; }
-	.milestone p { grid-column: 2; grid-row: 4; }
+	.milestone { display: grid; grid-template-columns: 2.75rem 1fr; grid-template-rows: auto auto auto; column-gap: 0.75rem; align-items: center; text-align: left; }
+	.milestoneDate { grid-column: 2; grid-row: 1; justify-self: start; padding: 0.25rem 0.55rem; font-size: 0.75rem; }
+	.milestoneNode { grid-column: 1; grid-row: 1 / span 3; margin: 0 auto; width: 2.2rem; height: 2.2rem; }
+	.milestoneIcon { width: 1.1rem; height: 1.1rem; }
+	.milestonePhase { grid-column: 2; grid-row: 2; margin: 0.25rem 0 0; font-size: 0.7rem; }
+	.milestone h3 { grid-column: 2; grid-row: 3; font-size: 0.95rem; }
+	.milestone p { grid-column: 2; grid-row: 4; font-size: 0.78rem; }
 }
 
