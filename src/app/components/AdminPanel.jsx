@@ -631,12 +631,28 @@ function DetailModal({ item, type, onClose, onSave, onDelete }) {
           </button>
           <span className={styles.eyebrow}>DETAIL VIEW</span>
           <h2>{getName(item)}</h2>
-          <p>
-            {item.content ||
-              item.leader?.email ||
-              item.email ||
-              "No additional detail available."}
-          </p>
+
+          {/* College name */}
+          {(item.collegeName || item.college) && (
+            <p style={{ margin: "0 0 8px", color: "#73776f", fontSize: "12px" }}>
+              {item.collegeName || item.college}
+            </p>
+          )}
+
+          {/* Content for announcements */}
+          {item.content && (
+            <p style={{ margin: "0 0 12px", color: "#555a54", fontSize: "12px", lineHeight: "1.6" }}>
+              {item.content}
+            </p>
+          )}
+
+          {/* Leader email */}
+          {(item.leader?.email || item.email) && (
+            <p style={{ margin: "0 0 16px", color: "#888b87", fontSize: "11px" }}>
+              {item.leader?.email || item.email}
+            </p>
+          )}
+
           <div className={styles.detailRows}>
             <span>
               Status{" "}
@@ -647,7 +663,79 @@ function DetailModal({ item, type, onClose, onSave, onDelete }) {
             <span>
               Created <strong>{formatDate(item.createdAt)}</strong>
             </span>
+            {item.expiresAt && (
+              <span>
+                Expires <strong>{formatDate(item.expiresAt)}</strong>
+              </span>
+            )}
+            {item.payment && (
+              <>
+                <span>
+                  Payment status{" "}
+                  <strong>{item.payment.status || "-"}</strong>
+                </span>
+                {item.payment.razorpayOrderId && (
+                  <span>
+                    Order ID{" "}
+                    <strong>{item.payment.razorpayOrderId}</strong>
+                  </span>
+                )}
+              </>
+            )}
+            {/* Payment-specific fields */}
+            {item.razorpayOrderId && (
+              <span>
+                Order ID <strong>{item.razorpayOrderId}</strong>
+              </span>
+            )}
+            {item.razorpayPaymentId && (
+              <span>
+                Payment ID <strong>{item.razorpayPaymentId}</strong>
+              </span>
+            )}
+            {(item.amount !== undefined && item.amount !== null) && (
+              <span>
+                Amount <strong>{money(item.amount)}</strong>
+              </span>
+            )}
           </div>
+
+          {/* Team members */}
+          {item.members && item.members.length > 0 && (
+            <div className={styles.memberList}>
+              <span style={{
+                background: "transparent",
+                padding: "16px 0 4px",
+                color: "#73776f",
+                fontSize: "10px",
+                fontWeight: "700",
+                letterSpacing: "0.12em",
+              }}>
+                TEAM MEMBERS ({item.members.length})
+              </span>
+              {item.members.map((member, idx) => (
+                <span key={member.id || idx}>
+                  {member.name || "Unnamed"}
+                  {member.isLeader && (
+                    <em style={{
+                      marginLeft: "8px",
+                      padding: "2px 6px",
+                      background: "#ddf0ae",
+                      color: "#47601a",
+                      fontSize: "8px",
+                      fontWeight: "700",
+                      letterSpacing: "0.08em",
+                      fontStyle: "normal",
+                    }}>
+                      LEADER
+                    </em>
+                  )}
+                  <small>{member.email || "No email"}</small>
+                  {member.phone && <small>{member.phone}</small>}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
