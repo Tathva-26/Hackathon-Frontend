@@ -64,9 +64,11 @@ function IconTrophy() {
 
 const MILESTONES = [
   { date: "SEP 20", phase: "PHASE 01", title: "Pre-Registration", desc: "Portal Opens", Icon: IconUserPlus },
-  { date: "TBI", phase: "PHASE 02", title: "Registration & Fee", desc: "Payment Window", Icon: IconCard },
-  { date: "TBI", phase: "PHASE 03", title: "Online Prelims", desc: "Round 1", Icon: IconTerminal },
-  { date: "OCT 1", phase: "PHASE 04", title: "Prelims Result", desc: "Shortlist Published", Icon: IconClipboardCheck },
+  { date: "SEP 24", phase: "PHASE 02", title: "Registration & Fee", desc: "Payment Window Opens", Icon: IconCard },
+  { date: "SEP 27 - 12PM", phase: "PHASE 03", title: "Registration Deadline", desc: "Registration deadline", Icon: IconTerminal },
+  { date: "SEP 27 - 7PM", phase: "PHASE 04", title: "Prelims", desc: "Problem statements released", Icon: IconClipboardCheck },
+  { date: "SEP 29 - 7PM", phase: "PHASE 04", title: "Prelims Submission Deadline", desc: "Submission portal closed", Icon: IconClipboardCheck },
+  { date: "OCT 01", phase: "PHASE 04", title: "Prelims Result", desc: "Finale Shortlists Released", Icon: IconClipboardCheck },
   { date: "OCT 09", phase: "PHASE 05", title: "Final Round", desc: "@ NIT Calicut Campus", Icon: IconTrophy },
 ];
 
@@ -146,20 +148,12 @@ export default function Pg1() {
       const total = spacer.offsetHeight - window.innerHeight;
       const scrolled = -rect.top;
 
-      const holdPoint1 = 0.3333 * total;
-      const holdPoint2 = 0.6666 * total;
-
-      lastScrolled = scrolled;
-
       const progress = clamp(total > 0 ? scrolled / total : 0, 0, 1);
-      const progress1 = clamp(progress / 0.3333, 0, 1);
-      const progress2 = clamp((progress - 0.3333) / 0.3333, 0, 1);
-      const progress3 = clamp((progress - 0.6666) / 0.3333, 0, 1);
 
       // --- hands: enlarge + fade earlier so they don't block About ---
-      const handScale = 1 + progress1 * 0.7;
+      const handScale = 1 + progress * 0.7;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
-      const handOpacity = isMobile ? 1 - clamp(progress1 / 0.4, 0, 1) : 1 - progress1;
+      const handOpacity = isMobile ? 1 - clamp(progress / 0.4, 0, 1) : 1 - progress * 1.3;
       if (leftHandRef.current) {
         leftHandRef.current.style.transform = `rotate(18deg) scale(${handScale})`;
         leftHandRef.current.style.opacity = handOpacity;
@@ -170,7 +164,7 @@ export default function Pg1() {
       }
 
       // --- "PRESENTS": floats up and disappears early ---
-      const presentsProgress = clamp(progress1 / 0.35, 0, 1);
+      const presentsProgress = clamp(progress / 0.35, 0, 1);
       if (presentsRef.current) {
         presentsRef.current.style.opacity = 1 - presentsProgress;
         presentsRef.current.style.transform = `translateY(${-60 * presentsProgress}px)`;
@@ -182,7 +176,7 @@ export default function Pg1() {
       }
 
       // --- Title + date: fade out shortly after ---
-      const titleProgress = clamp((progress1 - 0.15) / 0.4, 0, 1);
+      const titleProgress = clamp((progress - 0.15) / 0.4, 0, 1);
       const titleOpacity = 1 - titleProgress;
       if (titleRef.current) {
         titleRef.current.style.opacity = titleOpacity;
@@ -197,34 +191,12 @@ export default function Pg1() {
         preRegRef.current.style.transform = `translateY(${-20 * titleProgress}px)`;
       }
 
-      // --- About card / logo: fade + rise in for the last stretch ---
-      // About card
-      const aboutProgress = clamp((progress1 - 0.4) / 0.6, 0, 1);
-      const aboutFadeOut = clamp(progress2 / 0.4, 0, 1);
-      const aboutFinalOpacity = aboutProgress - aboutFadeOut;
-
+      // --- About card: fade + rise in ---
+      const aboutProgress = clamp((progress - 0.3) / 0.5, 0, 1);
       if (aboutCardRef.current) {
-        aboutCardRef.current.style.opacity = aboutFinalOpacity;
-        aboutCardRef.current.style.transform = `translateY(${50 * (1 - aboutProgress) + 50 * aboutFadeOut}px) scale(${0.95 + 0.05 * aboutProgress - 0.05 * aboutFadeOut})`;
-        aboutCardRef.current.style.pointerEvents = aboutFinalOpacity > 0.5 ? "auto" : "none";
-      }
-
-      // Timeline card
-      const timelineIn = clamp((progress2 - 0.4) / 0.6, 0, 1);
-      const timelineFadeOut = clamp(progress3 / 0.4, 0, 1);
-      const timelineFinalOpacity = timelineIn - timelineFadeOut;
-      if (timelineCardRef.current) {
-        timelineCardRef.current.style.opacity = timelineFinalOpacity;
-        timelineCardRef.current.style.transform = `translateY(${50 * (1 - timelineIn) + 50 * timelineFadeOut}px) scale(${0.95 + 0.05 * timelineIn - 0.05 * timelineFadeOut})`;
-        timelineCardRef.current.style.pointerEvents = timelineFinalOpacity > 0.5 ? "auto" : "none";
-      }
-
-      // Sponsors card
-      const sponsorsIn = clamp((progress3 - 0.4) / 0.6, 0, 1);
-      if (sponsorsCardRef.current) {
-        sponsorsCardRef.current.style.opacity = sponsorsIn;
-        sponsorsCardRef.current.style.transform = `translateY(${50 * (1 - sponsorsIn)}px) scale(${0.95 + 0.05 * sponsorsIn})`;
-        sponsorsCardRef.current.style.pointerEvents = sponsorsIn > 0.5 ? "auto" : "none";
+        aboutCardRef.current.style.opacity = aboutProgress;
+        aboutCardRef.current.style.transform = `translateY(${50 * (1 - aboutProgress)}px) scale(${0.95 + 0.05 * aboutProgress})`;
+        aboutCardRef.current.style.pointerEvents = aboutProgress > 0.5 ? "auto" : "none";
       }
 
       // --- Home navbar logo fade-in: perfectly synced with About page (desktop only) ---
@@ -241,8 +213,8 @@ export default function Pg1() {
 
       // Hero stops intercepting clicks once mostly faded out and fades out entirely
       if (heroRef.current) {
-        heroRef.current.style.pointerEvents = progress1 > 0.6 ? "none" : "auto";
-        heroRef.current.style.opacity = clamp(1 - progress1 * 1.5, 0, 1);
+        heroRef.current.style.pointerEvents = progress > 0.5 ? "none" : "auto";
+        heroRef.current.style.opacity = clamp(1 - progress * 1.5, 0, 1);
       }
     }
 
@@ -259,8 +231,7 @@ export default function Pg1() {
       window.removeEventListener('touchmove', handleTouchMove);
       if (wheelTimeout) clearTimeout(wheelTimeout);
 
-      // Reset any inline styles we imperatively set on the shared Navbar DOM node,
-      // since React reuses that node across route changes and won't clear these itself.
+      // Reset any inline styles we imperatively set on the shared Navbar DOM node
       if (homeNavRef.current) {
         homeNavRef.current.style.opacity = "";
         homeNavRef.current.style.pointerEvents = "";
@@ -276,8 +247,6 @@ export default function Pg1() {
   return (
     <>
       <div className={styles.scrollSpacer} ref={spacerRef}>
-        {/* Anchor for Navbar link routing */}
-        <div id="sponsors" style={{ position: "absolute", top: "460svh", left: 0 }} />
         <div className={styles.stickyStage}>
 
           {/* ---------- HERO ---------- */}
@@ -336,8 +305,7 @@ export default function Pg1() {
           </main>
 
           {/* ---------- ABOUT ---------- */}
-
-          <div className={`${styles.aboutWrap} mb-25 lg:mt-15`}>
+          <div className={styles.aboutWrap}>
             <div
               className={`prize-card-container ${styles.card} ${styles.aboutCardWrapper}`}
               ref={aboutCardRef}
@@ -367,79 +335,32 @@ export default function Pg1() {
             </div>
           </div>
 
-          
-          {/* ---------- TIMELINE & MILESTONES ---------- */}
-          <div className={`${styles.aboutWrap} mb-25 lg:mt-15`}>
-            <div
-              className={`prize-card-container ${styles.card} ${styles.timelineCardWrapper}`}
-              ref={timelineCardRef}
-              style={{ opacity: 0, pointerEvents: "none" }}
-            >
-              <span className={styles.pill}>TIMELINE &amp; MILESTONES</span>
-              <p className={styles.timelineIntro}>
-                {'// Roadmap to Innovation'} • Tathva &apos;26 Flagship Hackathon
-              </p>
-              <div className={styles.timeline}>
-                <div className={styles.timelineLine}></div>
-                {MILESTONES.map(({ date, phase, title, desc, Icon }) => (
-                  <div className={styles.milestone} key={phase}>
-                    <div className={styles.milestoneDate}>{date}</div>
-                    <div className={styles.milestoneNode}>
-                      <Icon />
-                    </div>
-                    <span className={styles.milestonePhase}>{phase}</span>
-                    <h3>{title}</h3>
-                    <p>{desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ---------- SPONSORS ---------- */}
-          <div className={`${styles.spWrap} lg:mt-15`}>
-            <div
-              ref={sponsorsCardRef}
-              className={`${styles.sponsorsCardWrapper}`}
-              style={{
-                opacity: 0,
-                pointerEvents: "none"
-              }}
-            >
-              <div className={`prize-card-container ${styles.card}`}>
-                <div className="prize-pill-badge">
-                  <span>SPONSORS</span>
-                </div>
-                <div className="sponsors-content-wrapper">
-                  <p className="sponsors-subtext">REVEALED SOON</p>
-                  <div className="sponsors-placeholder-grid">
-                    <div className="sponsor-box">
-                      <span className="sponsor-badge-tag">TITLE SPONSOR</span>
-                      <div className="sponsor-slot">COMING SOON</div>
-                    </div>
-                    <div className="sponsor-box">
-                      <span className="sponsor-badge-tag">POWERED BY</span>
-                      <div className="sponsor-slot">COMING SOON</div>
-                    </div>
-                    <div className="sponsor-box">
-                      <span className="sponsor-badge-tag">PLATINUM PARTNER</span>
-                      <div className="sponsor-slot">COMING SOON</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contacts Info */}
-                <div className={styles.sponsorsContact}>
-                  <p>Interested in partnering with us?<br/>reach out to us at:</p>
-                  <p>Contact: +91 9188590540</p>
-                  <p>Email: rahan10749@gmail.com</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
         </div>
       </div>
+
+      {/* ---------- TIMELINE & MILESTONES (NORMAL SCROLLING) ---------- */}
+      <section className={styles.timelineSection} ref={timelineCardRef} id="sponsors">
+        <div className={`prize-card-container ${styles.card} ${styles.timelineCardWrapper}`}>
+          <span className={styles.pill}>TIMELINE &amp; MILESTONES</span>
+          <p className={styles.timelineIntro}>
+            {'// Roadmap to Innovation'} • Tathva &apos;26 Flagship Hackathon
+          </p>
+          <div className={styles.timeline}>
+            <div className={styles.timelineLine}></div>
+            {MILESTONES.map(({ date, phase, title, desc, Icon }, index) => (
+              <div className={styles.milestone} key={`${phase}-${index}`}>
+                <div className={styles.milestoneDate}>{date}</div>
+                <div className={styles.milestoneNode}>
+                  <Icon />
+                </div>
+                <span className={styles.milestonePhase}>{phase}</span>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   );
 }

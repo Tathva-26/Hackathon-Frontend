@@ -137,8 +137,8 @@
 /* ============ SCROLL STAGE (appended) ============ */
 .scrollSpacer {
 	position: relative;
-	height: 480svh;
-	/* total scroll distance for hero → about → sponsors transition */
+	height: 200svh;
+	/* total scroll distance for hero → about transition */
 }
 
 .stickyStage {
@@ -152,12 +152,19 @@
 	position: absolute;
 	inset: 0;
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: center;
-	padding: 120px 24px 30px;
+	padding: 80px 24px 30px;
 	box-sizing: border-box;
 	pointer-events: none;
 	z-index: 5;
+	overflow-y: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.aboutWrap::-webkit-scrollbar {
+	display: none;
 }
 
 .spWrap {
@@ -262,15 +269,17 @@
 
 @media (max-width: 768px) {
 	.aboutWrap {
-		align-items: flex-start;
+		align-items: center;
 		justify-content: center;
-		padding-top: 75px;
+		padding: 70px 16px 20px;
+		box-sizing: border-box;
 	}
 
 	.spWrap {
-		align-items: flex-start;
+		align-items: center;
 		justify-content: center;
-		padding-top: 75px;
+		padding: 70px 16px 20px;
+		box-sizing: border-box;
 	}
 
 	.logo {
@@ -283,16 +292,18 @@
 	}
 
 	.card {
-		padding: 20px 14px 18px;
+		padding: 24px 18px 20px;
 		min-height: auto;
-		width: 95%;
+		width: 100%;
 		max-width: 440px;
+		margin: 0 auto;
 		border: 1.5px solid rgba(255, 255, 255, 0.25);
 		border-radius: 24px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		box-sizing: border-box;
 	}
 
 	.pill {
@@ -304,7 +315,8 @@
 	.description {
 		font-size: 13px;
 		margin-bottom: 20px;
-		line-height: 1.35;
+		line-height: 1.4;
+		text-align: center;
 	}
 
 	.button {
@@ -313,7 +325,7 @@
 	}
 
 	.buttonRow {
-		gap: 12px;
+		gap: 10px;
 		width: 100%;
 		justify-content: center;
 	}
@@ -353,8 +365,9 @@
 }
 
 .aboutCardWrapper {
-	margin-top: -6svh;
-	/* Moves the about box UP in desktop view */
+	margin-top: 0;
+	max-height: calc(100svh - 130px);
+	overflow-y: auto;
 }
 
 @media (max-width: 768px) {
@@ -384,7 +397,7 @@
 	}
 
 	.scrollSpacer {
-		height: 380svh;
+		height: 170svh;
 	}
 
 	.sponsorsCardWrapper {
@@ -393,11 +406,22 @@
 
 	.aboutCardWrapper {
 		margin-top: 0;
+		max-height: calc(100svh - 90px);
 	}
 
 	.timelineCardWrapper {
 		margin-top: 0;
 	}
+}
+
+.timelineSection {
+	position: relative;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	padding: 80px 24px 100px;
+	box-sizing: border-box;
+	z-index: 5;
 }
 
 .sponsorsContact {
@@ -414,6 +438,10 @@
 }
 
 @media (max-width: 768px) {
+	.timelineSection {
+		padding: 40px 14px 60px;
+	}
+
 	.sponsorsContact {
 		margin-top: 14px;
 		padding-bottom: 6px;
@@ -427,62 +455,70 @@
 /* --- TIMELINE --- */
 
 .timelineIntro {
-	margin: 0 0 34px;
+	margin: 0 0 24px;
 	color: #a3a3a3;
 	font-family: "Roboto", sans-serif;
 	font-size: 0.9rem;
 	letter-spacing: 0.12em;
-  text-align: center;
+	text-align: center;
 	text-transform: uppercase;
 }
 
 .timeline {
 	position: relative;
-	display: grid;
-	grid-template-columns: repeat(5, minmax(0, 1fr));
+	display: flex;
+	flex-direction: column;
+	gap: 1.1rem;
 	width: 100%;
-	max-width: 900px;
-	margin-bottom: 42px;
-	padding: 0 1.5%;
+	max-width: 720px;
+	margin-bottom: 24px;
+	padding: 0 1rem;
 }
 
 .timelineLine {
 	position: absolute;
-	top: 3.75rem;
-	right: 5%;
-	left: 5%;
-	border-top: 2px dotted rgba(255, 255, 255, 0.3);
+	top: 1.25rem;
+	bottom: 1.25rem;
+	left: 2.2rem;
+	border-top: 0;
+	border-left: 2px dotted rgba(255, 255, 255, 0.3);
 }
 
 .milestone {
 	position: relative;
 	z-index: 1;
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: 3.2rem 1fr;
+	grid-template-rows: auto auto auto auto;
+	column-gap: 1rem;
 	align-items: center;
-	min-width: 0;
-	text-align: center;
+	text-align: left;
 }
 
 .milestoneDate {
-	padding: 0.42rem 0.7rem;
+	grid-column: 2;
+	grid-row: 1;
+	justify-self: start;
+	padding: 0.35rem 0.65rem;
 	border: 1px solid rgba(255, 255, 255, 0.22);
 	border-radius: 0.35rem;
 	background: #111113;
 	color: #d4d4d4;
 	font-family: "Roboto", sans-serif;
-	font-size: 0.82rem;
+	font-size: 0.8rem;
 	font-weight: 600;
 	letter-spacing: 0.08em;
 }
 
 .milestoneNode {
+	grid-column: 1;
+	grid-row: 1 / span 4;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 2.5rem;
-	height: 2.5rem;
-	margin: 0.85rem 0 1.2rem;
+	width: 2.4rem;
+	height: 2.4rem;
+	margin: 0 auto;
 	border: 2px solid #a3a3a3;
 	border-radius: 50%;
 	background: #111113;
@@ -490,13 +526,16 @@
 }
 
 .milestoneIcon {
-	width: 1.25rem;
-	height: 1.25rem;
+	width: 1.2rem;
+	height: 1.2rem;
 	color: #d4d4d4;
 }
 
 .milestonePhase {
-	margin-bottom: 0.45rem;
+	grid-column: 2;
+	grid-row: 2;
+	margin-top: 0.25rem;
+	margin-bottom: 0.15rem;
 	color: #737373;
 	font-family: "Roboto", sans-serif;
 	font-size: 0.74rem;
@@ -505,6 +544,8 @@
 }
 
 .milestone h3 {
+	grid-column: 2;
+	grid-row: 3;
 	margin: 0;
 	color: #ffffff;
 	font-family: "Roboto", sans-serif;
@@ -513,7 +554,9 @@
 }
 
 .milestone p {
-	margin: 0.35rem 0 0;
+	grid-column: 2;
+	grid-row: 4;
+	margin: 0.25rem 0 0;
 	color: #a3a3a3;
 	font-family: "Roboto", sans-serif;
 	font-size: 0.82rem;
@@ -521,16 +564,16 @@
 }
 
 .timelineCardWrapper {
-    margin-top: -6svh;
+	margin-top: 0;
 }
 
 @media (max-width: 768px) {
 	.timelineIntro { margin-bottom: 16px; font-size: 0.72rem; }
-	.timeline { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 16px; padding: 0; }
-	.timelineLine { top: 1.25rem; right: auto; bottom: 1.25rem; left: 0.75rem; border-top: 0; border-left: 2px dotted rgba(255, 255, 255, 0.3); }
-	.milestone { display: grid; grid-template-columns: 2.75rem 1fr; grid-template-rows: auto auto auto; column-gap: 0.75rem; align-items: center; text-align: left; }
+	.timeline { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 16px; padding: 0; }
+	.timelineLine { top: 1.25rem; right: auto; bottom: 1.25rem; left: 1.85rem; border-top: 0; border-left: 2px dotted rgba(255, 255, 255, 0.3); }
+	.milestone { display: grid; grid-template-columns: 2.75rem 1fr; grid-template-rows: auto auto auto auto; column-gap: 0.75rem; align-items: center; text-align: left; }
 	.milestoneDate { grid-column: 2; grid-row: 1; justify-self: start; padding: 0.25rem 0.55rem; font-size: 0.75rem; }
-	.milestoneNode { grid-column: 1; grid-row: 1 / span 3; margin: 0 auto; width: 2.2rem; height: 2.2rem; }
+	.milestoneNode { grid-column: 1; grid-row: 1 / span 4; margin: 0 auto; width: 2.2rem; height: 2.2rem; }
 	.milestoneIcon { width: 1.1rem; height: 1.1rem; }
 	.milestonePhase { grid-column: 2; grid-row: 2; margin: 0.25rem 0 0; font-size: 0.7rem; }
 	.milestone h3 { grid-column: 2; grid-row: 3; font-size: 0.95rem; }
