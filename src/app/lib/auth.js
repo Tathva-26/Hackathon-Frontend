@@ -92,3 +92,35 @@ export async function fetchMyRegistration(token) {
   if (!res.ok) throw new Error("Could not load registration status");
   return res.json();
 }
+
+// Reads a backend { error: { code, message } } envelope into a thrown Error
+// with .code attached, or falls back to a generic message.
+async function readErrorEnvelope(res, fallback) {
+  const data = await res.json().catch(() => ({}));
+  const err = new Error(data?.error?.message || fallback);
+  err.code = data?.error?.code;
+  return err;
+}
+
+// POST /api/v1/registrations/:id/pay - creates (or resumes) a TIQR booking
+// for this registration and returns the checkout redirect URL. Called when
+// the user confirms on the "Pay now" popup.
+export async function initiatePayment(registrationId) {
+  const res = await fetch(
+    `${getVersionedBase()}/registrations/${encodeURIComponent(registrationId)}/pay`,
+    { method: "POST", credentials: "include" },
+  );
+  if (!res.ok) throw await readErrorEnvelope(res, "Could not start payment. Please try again.");
+  return res.json();
+}
+
+// GET /api/v1/payments/status/:bookingUid - checks (and, server-side,
+// reconciles live against TIQR) whether a booking has been confirmed paid.
+export async function fetchPaymentStatus(bookingUid) {
+  const res = await fetch(
+    `${getVersionedBase()}/payments/status/${encodeURIComponent(bookingUid)}`,
+    { credentials: "include" },
+  );
+  if (!res.ok) throw await readErrorEnvelope(res, "Could not check payment status.");
+  return res.json();
+}

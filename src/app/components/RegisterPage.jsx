@@ -1,11 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./register.module.css";
 import { useAuth } from "./AuthProvider";
 import GoogleSignIn from "./GoogleSignIn";
-import { fetchMyRegistration, getVersionedBase } from "../lib/auth";
+import {
+  fetchMyRegistration,
+  getVersionedBase,
+  initiatePayment,
+  fetchPaymentStatus,
+} from "../lib/auth";
 
 const emptyMember = { name: "", email: "", phone: "" };
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -32,16 +37,23 @@ export default function RegisterPage() {
   const [registration, setRegistration] = useState(null);
   const [regInfo, setRegInfo] = useState({ fetchedFor: "", loaded: false, registered: false, data: null });
   const [showEditor, setShowEditor] = useState(false);
-  // Load the leader's current team so they can view it
-  useEffect(() => {
-    if (status !== "authenticated" || !authToken) return;
+  const [showPayModal, setShowPayModal] = useState(false);
+  const [payState, setPayState] = useState("idle"); // idle | starting | error
+  const [payError, setPayError] = useState("");
+  const [statusCheck, setStatusCheck] = useState({ checking: false, error: "" });
+  // Guards the automatic one-shot reconcile below so it fires once per
+  // booking, not on every render.
+  const autoCheckedBookingRef = useRef(null);
+
+  // Loads (or reloads) the leader's current team + payment status.
+  const loadRegistration = (tokenForFetch) => {
     let cancelled = false;
-    fetchMyRegistration(authToken)
+    fetchMyRegistration(tokenForFetch)
       .then((data) => {
         if (cancelled) return;
         const registered = Boolean(data.registered && data.status);
-        setRegInfo({ fetchedFor: authToken, loaded: true, registered, data: registered ? data : null });
-        
+        setRegInfo({ fetchedFor: tokenForFetch, loaded: true, registered, data: registered ? data : null });
+
         // If the new user has NO team, clear out any old form data left behind by the previous user
         if (!registered) {
           setTeamName("");
@@ -56,7 +68,7 @@ export default function RegisterPage() {
       })
       .catch(() => {
         if (cancelled) return;
-        setRegInfo({ fetchedFor: authToken, loaded: true, registered: false, data: null });
+        setRegInfo({ fetchedFor: tokenForFetch, loaded: true, registered: false, data: null });
         setTeamName("");
         setCollegeName("");
         setLeaderPhone("");
@@ -69,7 +81,70 @@ export default function RegisterPage() {
     return () => {
       cancelled = true;
     };
+  };
+
+  // Load the leader's current team so they can view it
+  useEffect(() => {
+    if (status !== "authenticated" || !authToken) return;
+    return loadRegistration(authToken);
   }, [status, authToken]);
+
+  // Self-healing check: there is no webhook (see hackathon-backend/PAYMENT_FLOW.md),
+  // so a booking that was actually confirmed at TIQR while the user wasn't on
+  // the /registration/return page would otherwise sit PAYMENT_PENDING forever.
+  // Landing on the dashboard with a pending booking nudges the backend to
+  // reconcile live against TIQR once, then refreshes.
+  useEffect(() => {
+    const bookingUid = regInfo.data?.payment?.tiqrBookingUid;
+    if (regInfo.data?.status !== "PAYMENT_PENDING" || !bookingUid) return;
+    if (autoCheckedBookingRef.current === bookingUid) return;
+    autoCheckedBookingRef.current = bookingUid;
+
+    fetchPaymentStatus(bookingUid)
+      .then((result) => {
+        if (result.status !== regInfo.data?.payment?.status) {
+          loadRegistration(authToken);
+        }
+      })
+      .catch(() => {
+        // Best-effort: leave the dashboard showing the last known status.
+      });
+  }, [regInfo.data, authToken]);
+
+  const handleCheckStatus = async () => {
+    const bookingUid = regInfo.data?.payment?.tiqrBookingUid;
+    if (!bookingUid) return;
+    setStatusCheck({ checking: true, error: "" });
+    try {
+      await fetchPaymentStatus(bookingUid);
+      loadRegistration(authToken);
+      setStatusCheck({ checking: false, error: "" });
+    } catch (error) {
+      setStatusCheck({ checking: false, error: error.message || "Could not check payment status." });
+    }
+  };
+
+  const handlePayNow = async () => {
+    const registrationId = regInfo.data?.registrationId;
+    if (!registrationId) return;
+    setPayState("starting");
+    setPayError("");
+    try {
+      const data = await initiatePayment(registrationId);
+      const redirectUrl = data?.tiqr?.redirectUrl;
+      if (!redirectUrl) {
+        throw new Error("Payment provider did not return a checkout link. Please try again.");
+      }
+      window.location.href = redirectUrl;
+    } catch (error) {
+      setPayState("idle");
+      setPayError(error.message || "Could not start payment. Please try again.");
+      // A failure here can mean the backend just expired this booking window
+      // server-side (e.g. EXPIRED) - refresh so the dashboard reflects that
+      // instead of showing a stale PAYMENT_PENDING view with just an error.
+      loadRegistration(authToken);
+    }
+  };
 
   const handleEditTeam = () => {
     const reg = regInfo.data;
@@ -296,7 +371,7 @@ export default function RegisterPage() {
               <strong>₹{Math.round(reg.amount / 100)}</strong>
             </div>
           </div>
-          {regInfo?.data?.status === "DRAFT" && (
+          {reg.status === "DRAFT" && (
             <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
               <button
                 type="button"
@@ -308,13 +383,130 @@ export default function RegisterPage() {
               <button
                 type="button"
                 className={styles.primaryButton}
-                disabled
-                style={{ opacity: 0.5, cursor: "not-allowed" }}
+                onClick={() => {
+                  setPayError("");
+                  setShowPayModal(true);
+                }}
               >
                 PAY NOW <span>↗</span>
               </button>
             </div>
           )}
+          {reg.status === "DRAFT" && payError && !showPayModal && (
+            <p className={styles.error} role="alert">
+              {payError}
+            </p>
+          )}
+
+          {reg.status === "PAYMENT_PENDING" && (
+            <>
+              <p className={styles.authCopy} style={{ margin: "0 0 1rem" }}>
+                We&apos;re waiting for TIQR to confirm your payment. If you already
+                paid, this usually clears within a minute or two.
+              </p>
+              <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className={styles.primaryButton}
+                  onClick={handlePayNow}
+                  disabled={payState === "starting"}
+                >
+                  {payState === "starting" ? "REDIRECTING..." : "RESUME PAYMENT"} <span>↗</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.primaryButton}
+                  onClick={handleCheckStatus}
+                  disabled={statusCheck.checking}
+                >
+                  {statusCheck.checking ? "CHECKING..." : "REFRESH STATUS"} <span>↗</span>
+                </button>
+              </div>
+              {(payError || statusCheck.error) && (
+                <p className={styles.error} role="alert">
+                  {payError || statusCheck.error}
+                </p>
+              )}
+            </>
+          )}
+
+          {reg.status === "PAID" && (
+            <p className={styles.authCopy} style={{ margin: "0 0 1rem" }}>
+              You&apos;re all set for TatHack &apos;26. See you at the event!
+            </p>
+          )}
+
+          {showPayModal && (
+            <div
+              role="dialog"
+              aria-modal="true"
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(0,0,0,0.7)",
+                display: "grid",
+                placeItems: "center",
+                zIndex: 50,
+                padding: "1.5rem",
+              }}
+            >
+              <div
+                style={{
+                  width: "min(28rem, 100%)",
+                  background: "#0c0c0c",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  boxShadow: "1rem 1rem 0 rgba(255,255,255,0.04)",
+                  padding: "2rem",
+                }}
+              >
+                <p className={styles.eyebrow} style={{ marginBottom: "0.75rem" }}>
+                  CONFIRM PAYMENT
+                </p>
+                <p className={styles.authCopy} style={{ margin: "0 0 1.5rem" }}>
+                  You&apos;re about to pay the registration fee for{" "}
+                  <strong style={{ color: "#fff" }}>{reg.teamName}</strong> (
+                  {reg.memberCount} member{reg.memberCount === 1 ? "" : "s"}).
+                </p>
+                <div className={styles.orderDetails} style={{ gridTemplateColumns: "1fr", margin: "0 0 1.5rem" }}>
+                  <div>
+                    <span>AMOUNT TO PAY</span>
+                    <strong>₹{Math.round(reg.amount / 100)}</strong>
+                  </div>
+                </div>
+                {payError && (
+                  <p className={styles.error} role="alert">
+                    {payError}
+                  </p>
+                )}
+                <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginTop: "1.5rem" }}>
+                  <button
+                    type="button"
+                    className={styles.primaryButton}
+                    onClick={handlePayNow}
+                    disabled={payState === "starting"}
+                  >
+                    {payState === "starting" ? "REDIRECTING..." : "CONTINUE"} <span>↗</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowPayModal(false)}
+                    disabled={payState === "starting"}
+                    style={{
+                      background: "transparent",
+                      border: "1px solid #555",
+                      color: "#aaa",
+                      padding: "1rem 1.2rem",
+                      cursor: payState === "starting" ? "wait" : "pointer",
+                      font: "600 0.7rem 'Press Start 2P', monospace",
+                    }}
+                  >
+                    CANCEL
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div style={{ marginTop: 24 }}>
             <button
               type="button"
@@ -536,9 +728,9 @@ export default function RegisterPage() {
           )}
           <div className={styles.submitRow}>
             <p>
-              Fee = 150 * team size
+              Registration fee is calculated per member.
               <br />
-              To be collected later
+              You&apos;ll see the exact amount, and pay it, from your dashboard.
             </p>
             <button
               className={styles.submitButton}
