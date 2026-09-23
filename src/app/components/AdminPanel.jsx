@@ -326,6 +326,25 @@ export default function AdminPanel() {
 }
 
 function Overview({ onNavigate }) {
+  const { token } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) return;
+    adminRequest("/overview", {}, token)
+      .then((data) => setStats(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  const s = stats || {};
+  const reg = s.registrations || {};
+  const pay = s.payments || {};
+  const rev = s.revenue || {};
+  const teams = s.teams || {};
+  const ann = s.announcements || {};
+
   return (
     <div className={styles.overview}>
       <div className={styles.heroPanel}>
@@ -349,53 +368,76 @@ function Overview({ onNavigate }) {
       </div>
       <div className={styles.metricGrid}>
         <Metric
-          label="Team pipeline"
-          value="View teams"
+          label="Teams registered"
+          value={loading ? "..." : String(teams.total ?? 0)}
           action={() => onNavigate("teams")}
           accent="lime"
         />
         <Metric
-          label="Payment ledger"
-          value="View payments"
+          label="Payments captured"
+          value={loading ? "..." : String(pay.captured ?? 0)}
           action={() => onNavigate("payments")}
           accent="coral"
         />
         <Metric
           label="Registration drafts"
-          value="View queue"
+          value={loading ? "..." : String(reg.draft ?? 0)}
           action={() => onNavigate("registrations")}
           accent="blue"
         />
         <Metric
-          label="Broadcast center"
-          value="Manage news"
-          action={() => onNavigate("announcements")}
+          label="Revenue collected"
+          value={loading ? "..." : (rev.formatted || "₹0")}
+          action={() => onNavigate("payments")}
           accent="yellow"
         />
       </div>
-      <div className={styles.quickPanel}>
-        <div>
-          <span className={styles.eyebrow}>OPERATOR NOTE</span>
-          <h3>Keep the queue clean.</h3>
-          <p>
-            Use the resource views to filter records, open complete details, and
-            resolve changes without leaving the console.
-          </p>
+
+      {/* Detailed stats grid */}
+      {!loading && stats && (
+        <div className={styles.quickPanel} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0", borderTop: "1px solid var(--line)", padding: "0" }}>
+          <StatGroup title="REGISTRATIONS" items={[
+            { label: "Total", value: reg.total },
+            { label: "Draft", value: reg.draft },
+            { label: "Paid", value: reg.paid },
+            { label: "Payment Pending", value: reg.paymentPending },
+            { label: "Expired", value: reg.expired },
+            { label: "Cancelled", value: reg.cancelled },
+          ]} />
+          <StatGroup title="PAYMENTS" items={[
+            { label: "Total", value: pay.total },
+            { label: "Captured", value: pay.captured },
+            { label: "Verified", value: pay.verified },
+            { label: "Failed", value: pay.failed },
+            { label: "Created", value: pay.created },
+          ]} />
+          <StatGroup title="TEAMS & USERS" items={[
+            { label: "Teams", value: teams.total },
+            { label: "Team Members", value: teams.totalMembers },
+            { label: "Users (accounts)", value: s.users?.total },
+          ]} />
+          <StatGroup title="ANNOUNCEMENTS" items={[
+            { label: "Total", value: ann.total },
+            { label: "Published", value: ann.published },
+            { label: "Drafts", value: ann.drafts },
+          ]} />
         </div>
-        <div className={styles.statusList}>
-          <span>
-            <i className={styles.dotLime} />
-            Database role enforced
-          </span>
-          <span>
-            <i className={styles.dotBlue} />
-            Pagination enabled
-          </span>
-          <span>
-            <i className={styles.dotCoral} />
-            Webhook-safe removal
-          </span>
-        </div>
+      )}
+    </div>
+  );
+}
+
+function StatGroup({ title, items }) {
+  return (
+    <div style={{ padding: "20px 24px", borderRight: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
+      <span className={styles.eyebrow}>{title}</span>
+      <div style={{ marginTop: "14px", display: "grid", gap: "8px" }}>
+        {items.map((item) => (
+          <div key={item.label} style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "#555a54" }}>
+            <span>{item.label}</span>
+            <strong style={{ color: "var(--ink)" }}>{item.value ?? 0}</strong>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -631,12 +673,28 @@ function DetailModal({ item, type, onClose, onSave, onDelete }) {
           </button>
           <span className={styles.eyebrow}>DETAIL VIEW</span>
           <h2>{getName(item)}</h2>
-          <p>
-            {item.content ||
-              item.leader?.email ||
-              item.email ||
-              "No additional detail available."}
-          </p>
+
+          {/* College name */}
+          {(item.collegeName || item.college) && (
+            <p style={{ margin: "0 0 8px", color: "#73776f", fontSize: "12px" }}>
+              {item.collegeName || item.college}
+            </p>
+          )}
+
+          {/* Content for announcements */}
+          {item.content && (
+            <p style={{ margin: "0 0 12px", color: "#555a54", fontSize: "12px", lineHeight: "1.6" }}>
+              {item.content}
+            </p>
+          )}
+
+          {/* Leader email */}
+          {(item.leader?.email || item.email) && (
+            <p style={{ margin: "0 0 16px", color: "#888b87", fontSize: "11px" }}>
+              {item.leader?.email || item.email}
+            </p>
+          )}
+
           <div className={styles.detailRows}>
             <span>
               Status{" "}
@@ -647,7 +705,79 @@ function DetailModal({ item, type, onClose, onSave, onDelete }) {
             <span>
               Created <strong>{formatDate(item.createdAt)}</strong>
             </span>
+            {item.expiresAt && (
+              <span>
+                Expires <strong>{formatDate(item.expiresAt)}</strong>
+              </span>
+            )}
+            {item.payment && (
+              <>
+                <span>
+                  Payment status{" "}
+                  <strong>{item.payment.status || "-"}</strong>
+                </span>
+                {item.payment.razorpayOrderId && (
+                  <span>
+                    Order ID{" "}
+                    <strong>{item.payment.razorpayOrderId}</strong>
+                  </span>
+                )}
+              </>
+            )}
+            {/* Payment-specific fields */}
+            {item.razorpayOrderId && (
+              <span>
+                Order ID <strong>{item.razorpayOrderId}</strong>
+              </span>
+            )}
+            {item.razorpayPaymentId && (
+              <span>
+                Payment ID <strong>{item.razorpayPaymentId}</strong>
+              </span>
+            )}
+            {(item.amount !== undefined && item.amount !== null) && (
+              <span>
+                Amount <strong>{money(item.amount)}</strong>
+              </span>
+            )}
           </div>
+
+          {/* Team members */}
+          {item.members && item.members.length > 0 && (
+            <div className={styles.memberList}>
+              <span style={{
+                background: "transparent",
+                padding: "16px 0 4px",
+                color: "#73776f",
+                fontSize: "10px",
+                fontWeight: "700",
+                letterSpacing: "0.12em",
+              }}>
+                TEAM MEMBERS ({item.members.length})
+              </span>
+              {item.members.map((member, idx) => (
+                <span key={member.id || idx}>
+                  {member.name || "Unnamed"}
+                  {member.isLeader && (
+                    <em style={{
+                      marginLeft: "8px",
+                      padding: "2px 6px",
+                      background: "#ddf0ae",
+                      color: "#47601a",
+                      fontSize: "8px",
+                      fontWeight: "700",
+                      letterSpacing: "0.08em",
+                      fontStyle: "normal",
+                    }}>
+                      LEADER
+                    </em>
+                  )}
+                  <small>{member.email || "No email"}</small>
+                  {member.phone && <small>{member.phone}</small>}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
