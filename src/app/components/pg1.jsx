@@ -299,7 +299,7 @@ export default function Pg1() {
                 }}
               >
                 <span className="pre-reg-dot"></span>
-                <span>Pre-registrations Open Now</span>
+                <span>Registrations Open Now</span>
               </div>
             </section>
           </main>
