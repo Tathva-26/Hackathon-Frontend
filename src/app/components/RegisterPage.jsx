@@ -408,15 +408,17 @@ export default function RegisterPage() {
                 We&apos;re waiting for TIQR to confirm your payment. If you already
                 paid, this usually clears within a minute or two.
               </p>
+              {/* No resume: a payment that was left or failed can be retried
+                  once its 15-minute window is over - the backend then puts the
+                  team back to DRAFT and "Pay now" starts a fresh payment. */}
+              <p className={styles.error} role="status">
+                {reg.expiresAt && new Date(reg.expiresAt) > new Date()
+                  ? `Payment didn't go through? You can try again after ${new Date(
+                      reg.expiresAt,
+                    ).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} (15 minutes after you started).`
+                  : "Payment didn't go through? You can try again now - click Refresh Status."}
+              </p>
               <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  className={styles.primaryButton}
-                  onClick={handlePayNow}
-                  disabled={payState === "starting"}
-                >
-                  {payState === "starting" ? "REDIRECTING..." : "RESUME PAYMENT"} <span>↗</span>
-                </button>
                 <button
                   type="button"
                   className={styles.primaryButton}
@@ -477,6 +479,21 @@ export default function RegisterPage() {
                     <strong>₹{Math.round(reg.amount / 100)}</strong>
                   </div>
                 </div>
+                <p
+                  role="alert"
+                  style={{
+                    margin: "0 0 1.5rem",
+                    padding: "0.75rem 1rem",
+                    border: "1px solid #ff3b3b",
+                    color: "#ff8c8c",
+                    fontSize: "0.85rem",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Please don&apos;t press Back, refresh or close the tab during
+                  payment. If you leave the payment page before finishing, you
+                  will have to wait 15 minutes before you can try again.
+                </p>
                 <label
                   style={{
                     display: "flex",
