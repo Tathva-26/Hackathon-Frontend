@@ -5,6 +5,12 @@ import { clearSession, fetchSessionUser, loadSession, saveSession, fetchMyRegist
 
 const AuthContext = createContext(null);
 
+// Leaders with a team and members of someone else's team both get
+// "Dashboard" in the navbar rather than an invitation to register.
+function hasTeam(regData) {
+  return Boolean((regData.registered && regData.status) || regData.isTeamMember);
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState("");
@@ -29,7 +35,7 @@ export function AuthProvider({ children }) {
         return fetchMyRegistration(savedToken);
       })
       .then((regData) => {
-        setIsRegistered(Boolean(regData.registered && regData.status));
+        setIsRegistered(hasTeam(regData));
       })
       .catch(() => {
         // Our JWT expired/invalid -> force re-login instead of silent failures later.
@@ -48,7 +54,7 @@ export function AuthProvider({ children }) {
     setError("");
     setStatus("authenticated");
     fetchMyRegistration(newToken)
-      .then(regData => setIsRegistered(Boolean(regData.registered && regData.status)))
+      .then(regData => setIsRegistered(hasTeam(regData)))
       .catch(() => setIsRegistered(false));
   }, []);
 

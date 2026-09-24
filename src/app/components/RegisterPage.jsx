@@ -35,7 +35,7 @@ export default function RegisterPage() {
   const [formError, setFormError] = useState("");
   const [submitState, setSubmitState] = useState("idle");
   const [registration, setRegistration] = useState(null);
-  const [regInfo, setRegInfo] = useState({ fetchedFor: "", loaded: false, registered: false, data: null });
+  const [regInfo, setRegInfo] = useState({ fetchedFor: "", loaded: false, registered: false, isTeamMember: false, data: null });
   const [showEditor, setShowEditor] = useState(false);
   const [showPayModal, setShowPayModal] = useState(false);
   // Leader must confirm the roster is final before paying - once payment
@@ -55,7 +55,13 @@ export default function RegisterPage() {
       .then((data) => {
         if (cancelled) return;
         const registered = Boolean(data.registered && data.status);
-        setRegInfo({ fetchedFor: tokenForFetch, loaded: true, registered, data: registered ? data : null });
+        setRegInfo({
+          fetchedFor: tokenForFetch,
+          loaded: true,
+          registered,
+          isTeamMember: !registered && Boolean(data.isTeamMember),
+          data: registered ? data : null,
+        });
 
         // If the new user has NO team, clear out any old form data left behind by the previous user
         if (!registered) {
@@ -71,7 +77,7 @@ export default function RegisterPage() {
       })
       .catch(() => {
         if (cancelled) return;
-        setRegInfo({ fetchedFor: tokenForFetch, loaded: true, registered: false, data: null });
+        setRegInfo({ fetchedFor: tokenForFetch, loaded: true, registered: false, isTeamMember: false, data: null });
         setTeamName("");
         setCollegeName("");
         setLeaderPhone("");
@@ -259,10 +265,18 @@ export default function RegisterPage() {
       });
 
       const data = await response.json();
-      if (!response.ok)
+      if (!response.ok) {
+        // Added to another team since this page loaded: switch to the
+        // members-only screen rather than showing an error on the form.
+        if (data?.error?.code === "TEAM_MEMBER") {
+          setSubmitState("idle");
+          loadRegistration(authToken);
+          return;
+        }
         throw new Error(
           data?.error?.message || (isUpdating ? "We could not update your team." : "We could not create your team."),
         );
+      }
 
       setRegistration(data);
       setSubmitState(isUpdating ? "updated" : "created");
@@ -326,6 +340,49 @@ export default function RegisterPage() {
       <main className={styles.page}>
         <div className={styles.grid} />
         <p className={styles.loading}>CHECKING REGISTRATION...</p>
+      </main>
+    );
+  }
+
+  // A non-leader member of someone else's team: only the leader manages the
+  // registration, so there is no form or dashboard to show them.
+  if (regInfo.isTeamMember) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.grid} />
+        <section className={styles.authPanel}>
+          <p className={styles.eyebrow}>TATHVA PRESENTS</p>
+          <h1 className={styles.authTitle}>
+            ACCESS
+            <br />
+            <span>RESTRICTED.</span>
+          </h1>
+          <p className={styles.authCopy}>
+            You&apos;ve been added to a team as a member. Only the team leader
+            can manage the registration and payment. Ask your team leader for
+            access and updates.
+          </p>
+          <div style={{ marginTop: 24 }}>
+            <button
+              type="button"
+              onClick={logout}
+              style={{
+                background: "transparent",
+                border: "1px solid #555",
+                color: "#aaa",
+                padding: "8px 12px",
+                cursor: "pointer",
+                fontSize: 11,
+                letterSpacing: 1,
+              }}
+            >
+              SIGN OUT ({currentUser.email})
+            </button>
+          </div>
+          <Link href="/" className={styles.backLink}>
+            ← BACK TO HOME
+          </Link>
+        </section>
       </main>
     );
   }
