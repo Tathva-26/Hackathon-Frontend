@@ -38,6 +38,9 @@ export default function RegisterPage() {
   const [regInfo, setRegInfo] = useState({ fetchedFor: "", loaded: false, registered: false, data: null });
   const [showEditor, setShowEditor] = useState(false);
   const [showPayModal, setShowPayModal] = useState(false);
+  // Leader must confirm the roster is final before paying - once payment
+  // starts the draft moves to PAYMENT_PENDING and can no longer be edited.
+  const [detailsConfirmed, setDetailsConfirmed] = useState(false);
   const [payState, setPayState] = useState("idle"); // idle | starting | error
   const [payError, setPayError] = useState("");
   const [statusCheck, setStatusCheck] = useState({ checking: false, error: "" });
@@ -385,6 +388,7 @@ export default function RegisterPage() {
                 className={styles.primaryButton}
                 onClick={() => {
                   setPayError("");
+                  setDetailsConfirmed(false);
                   setShowPayModal(true);
                 }}
               >
@@ -459,7 +463,7 @@ export default function RegisterPage() {
                   padding: "2rem",
                 }}
               >
-                <p className={styles.eyebrow} style={{ marginBottom: "0.75rem" }}>
+                <p className={styles.eyebrow} style={{ marginBottom: "0.75rem", color: "#ff3b3b" }}>
                   CONFIRM PAYMENT
                 </p>
                 <p className={styles.authCopy} style={{ margin: "0 0 1.5rem" }}>
@@ -473,6 +477,28 @@ export default function RegisterPage() {
                     <strong>₹{Math.round(reg.amount / 100)}</strong>
                   </div>
                 </div>
+                <label
+                  style={{
+                    display: "flex",
+                    gap: "0.75rem",
+                    alignItems: "flex-start",
+                    margin: "0 0 1.5rem",
+                    cursor: payState === "starting" ? "wait" : "pointer",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={detailsConfirmed}
+                    onChange={(e) => setDetailsConfirmed(e.target.checked)}
+                    disabled={payState === "starting"}
+                    style={{ marginTop: "0.2rem", flexShrink: 0, accentColor: "#fff" }}
+                  />
+                  <span className={styles.authCopy} style={{ margin: 0 }}>
+                    I confirm that I have filled in the correct details of all my
+                    teammates, and I understand that I cannot edit, add or remove
+                    team details after proceeding to payment.
+                  </span>
+                </label>
                 {payError && (
                   <p className={styles.error} role="alert">
                     {payError}
@@ -483,7 +509,19 @@ export default function RegisterPage() {
                     type="button"
                     className={styles.primaryButton}
                     onClick={handlePayNow}
-                    disabled={payState === "starting"}
+                    disabled={payState === "starting" || !detailsConfirmed}
+                    style={{
+                      flex: "1 1 0",
+                      // Greyed out until the roster confirmation is ticked.
+                      // Inline so it also overrides .primaryButton:hover.
+                      ...(!detailsConfirmed && {
+                        background: "#555",
+                        borderColor: "#555",
+                        color: "#999",
+                        cursor: "not-allowed",
+                        transform: "none",
+                      }),
+                    }}
                   >
                     {payState === "starting" ? "REDIRECTING..." : "CONTINUE"} <span>↗</span>
                   </button>
@@ -492,6 +530,10 @@ export default function RegisterPage() {
                     onClick={() => setShowPayModal(false)}
                     disabled={payState === "starting"}
                     style={{
+                      // Same box as .primaryButton (which carries margin-top: 1rem)
+                      // so both buttons line up at equal width and height.
+                      flex: "1 1 0",
+                      marginTop: "1rem",
                       background: "transparent",
                       border: "1px solid #555",
                       color: "#aaa",
