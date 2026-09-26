@@ -31,7 +31,13 @@ const faqData = [
     id: 5,
     question: "What is the registration fee?",
     answer:
-      "The registration fee is ₹150 per participant. All pre-registered participants will be notified when the payment window opens.",
+      "The registration fee is ₹150 per participant.",
+  },
+  {
+    id: 6,
+    question: "Can we use AI to generate our entire project?",
+    answer:
+      "AI tools may assist with development, but the project must be genuinely developed and understood by the participating team. Participants should not submit a project that they cannot explain or demonstrate themselves.",
   },
 ];
 
