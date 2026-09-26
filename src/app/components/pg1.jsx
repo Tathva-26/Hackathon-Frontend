@@ -65,9 +65,9 @@ function IconTrophy() {
 const MILESTONES = [
   { date: "SEP 20", phase: "PHASE 01", title: "Pre-Registration", desc: "Portal Opens", Icon: IconUserPlus },
   { date: "SEP 24", phase: "PHASE 02", title: "Registration & Fee", desc: "Payment Window Opens", Icon: IconCard },
-  { date: "SEP 27 - 12PM", phase: "PHASE 03", title: "Registration Deadline", desc: "Registration deadline", Icon: IconTerminal },
-  { date: "SEP 27 - 7PM", phase: "PHASE 04", title: "Prelims", desc: "Problem statements released", Icon: IconClipboardCheck },
-  { date: "SEP 29 - 7PM", phase: "PHASE 04", title: "Prelims Submission Deadline", desc: "Submission portal closed", Icon: IconClipboardCheck },
+  { date: "SEP 28 - 12PM", phase: "PHASE 03", title: "Registration Deadline", desc: "Registration deadline", Icon: IconTerminal },
+  { date: "SEP 28- 7PM", phase: "PHASE 04", title: "Prelims", desc: "Problem statements released", Icon: IconClipboardCheck },
+  { date: "SEP 30 - 7PM", phase: "PHASE 04", title: "Prelims Submission Deadline", desc: "Submission portal closed", Icon: IconClipboardCheck },
   { date: "OCT 01", phase: "PHASE 04", title: "Prelims Result", desc: "Finale Shortlists Released", Icon: IconClipboardCheck },
   { date: "OCT 09", phase: "PHASE 05", title: "Final Round", desc: "@ NIT Calicut Campus", Icon: IconTrophy },
 ];
@@ -75,9 +75,13 @@ const MILESTONES = [
 export default function Pg1() {
 
   const handleSeeSchedule = () => {
-    if (spacerRef.current) {
-      const total = spacerRef.current.offsetHeight - window.innerHeight;
-      window.scrollTo({ top: spacerRef.current.offsetTop + total * 0.6666, behavior: 'smooth' });
+    if (timelineCardRef.current) {
+      timelineCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      const el = document.getElementById('timeline');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   };
 
@@ -347,17 +351,27 @@ export default function Pg1() {
           </p>
           <div className={styles.timeline}>
             <div className={styles.timelineLine}></div>
-            {MILESTONES.map(({ date, phase, title, desc, Icon }, index) => (
-              <div className={styles.milestone} key={`${phase}-${index}`}>
-                <div className={styles.milestoneDate}>{date}</div>
-                <div className={styles.milestoneNode}>
-                  <Icon />
+            {MILESTONES.map(({ date, phase, title, desc, Icon }, index) => {
+              const isEven = index % 2 === 0;
+              return (
+                <div
+                  className={`${styles.milestone} ${isEven ? styles.milestoneLeft : styles.milestoneRight}`}
+                  key={`${phase}-${index}`}
+                >
+                  <div className={styles.milestoneNode}>
+                    <Icon />
+                  </div>
+                  <div className={styles.milestoneCard}>
+                    <div className={styles.milestoneHeader}>
+                      <span className={styles.milestonePhase}>{phase}</span>
+                      <span className={styles.milestoneDate}>{date}</span>
+                    </div>
+                    <h3 className={styles.milestoneTitle}>{title}</h3>
+                    <p className={styles.milestoneDesc}>{desc}</p>
+                  </div>
                 </div>
-                <span className={styles.milestonePhase}>{phase}</span>
-                <h3>{title}</h3>
-                <p>{desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
