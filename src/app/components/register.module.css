@@ -344,6 +344,95 @@
   font-size: 0.85rem;
   overflow-wrap: anywhere;
 }
+/* WhatsApp group invite: dashboard card and the one-time popup after paying. */
+.inviteCard {
+  border: 1px solid #333;
+  border-left: 2px solid #25d366;
+  padding: 1.25rem 1.5rem 1.5rem;
+  margin: 0 0 1.5rem;
+}
+.inviteCard .eyebrow {
+  color: #25d366;
+  margin-bottom: 0;
+}
+.inviteCard .authCopy {
+  margin: 1rem 0 0.5rem;
+}
+.inviteCard .primaryButton {
+  text-align: center;
+}
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.75);
+}
+.modalBox {
+  width: min(30rem, 100%);
+  max-height: calc(100svh - 3rem);
+  overflow-y: auto;
+  background: #0c0c0c;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid #25d366;
+  box-shadow: 1rem 1rem 0 rgba(255, 255, 255, 0.04);
+  padding: 2rem;
+}
+.modalBox .eyebrow {
+  color: #25d366;
+  margin-bottom: 1rem;
+}
+.modalTitle {
+  margin: 0;
+  color: #fff;
+  font-family: "Anton", sans-serif;
+  font-size: clamp(2.5rem, 9vw, 3.5rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+}
+.modalTitle span {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.7);
+}
+.modalBox .authCopy {
+  margin: 1.25rem 0 0.5rem;
+}
+.modalActions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+.modalActions > * {
+  margin-top: 0;
+  text-align: center;
+}
+.modalActions .primaryButton span,
+.inviteCard .primaryButton span {
+  margin-left: 0.75rem;
+}
+.secondaryButton {
+  border: 1px solid #555;
+  background: transparent;
+  color: #aaa;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  font:
+    600 0.7rem "Press Start 2P",
+    monospace;
+}
+.secondaryButton:hover {
+  color: #fff;
+  border-color: #aaa;
+}
+.modalHint {
+  margin: 1.25rem 0 0;
+  color: #777;
+  font-size: 0.8rem;
+}
 @media (max-width: 800px) {
   .page {
     padding-top: 8rem;
@@ -373,6 +462,13 @@
   }
 }
 @media (max-width: 480px) {
+  .modalBox,
+  .inviteCard {
+    padding: 1.25rem;
+  }
+  .inviteCard .primaryButton {
+    display: block;
+  }
   .submitRow {
     align-items: stretch;
     flex-direction: column;

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./register.module.css";
 import { useAuth } from "./AuthProvider";
 import GoogleSignIn from "./GoogleSignIn";
+import { WhatsAppInviteCard, WhatsAppInvitePopup } from "./WhatsAppInvite";
 import {
   fetchMyRegistration,
   getVersionedBase,
@@ -494,9 +495,13 @@ export default function RegisterPage() {
           )}
 
           {reg.status === "PAID" && (
-            <p className={styles.authCopy} style={{ margin: "0 0 1rem" }}>
-              You&apos;re all set for TatHack &apos;26. See you at the event!
-            </p>
+            <>
+              <p className={styles.authCopy} style={{ margin: "0 0 1rem" }}>
+                You&apos;re all set for TatHack &apos;26. See you at the event!
+              </p>
+              <WhatsAppInviteCard />
+              <WhatsAppInvitePopup registrationId={reg.registrationId} />
+            </>
           )}
 
           {showPayModal && (

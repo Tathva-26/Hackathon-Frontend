@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./register.module.css";
 import { useAuth } from "./AuthProvider";
 import { fetchMyRegistration, fetchPaymentStatus } from "../lib/auth";
+import { WhatsAppInvitePopup } from "./WhatsAppInvite";
 
 // TIQR has no webhook (see hackathon-backend/PAYMENT_FLOW.md); this page is
 // where the buyer lands after TIQR checkout (callback_url), and polling
@@ -18,6 +19,7 @@ export default function PaymentReturnPage() {
   // loading | no_registration | already_paid | polling | confirmed | failed | timed_out | error
   const [view, setView] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
+  const [registrationId, setRegistrationId] = useState(null);
   const attemptsRef = useRef(0);
   const cancelledRef = useRef(false);
 
@@ -62,6 +64,7 @@ export default function PaymentReturnPage() {
           setView("no_registration");
           return;
         }
+        setRegistrationId(data.registrationId || null);
         if (data.status === "PAID") {
           setView("already_paid");
           return;
@@ -215,6 +218,9 @@ export default function PaymentReturnPage() {
           ← BACK TO HOME
         </Link>
       </section>
+      {(view === "confirmed" || view === "already_paid") && (
+        <WhatsAppInvitePopup registrationId={registrationId} />
+      )}
     </main>
   );
 }
