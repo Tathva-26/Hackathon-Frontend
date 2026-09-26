@@ -2,4 +2,4 @@
 // teams once they have paid (a one-time popup, then a card on the /register
 // dashboard).
 export const WHATSAPP_GROUP_URL =
-    'https://chat.whatsapp.com/GalzieKHRgh7nx8uwB0LOz';
+    'https://chat.whatsapp.com/EEjdvv7Cj6nBM9RjRFrvFO';
