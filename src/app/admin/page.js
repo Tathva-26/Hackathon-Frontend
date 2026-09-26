@@ -1,4 +1,4 @@
-import AdminPanel from "../components/AdminPanel";
+import AdminShell from "../components/admin/AdminShell";
 
 export const metadata = {
   title: "Admin Console | TatHack '26",
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function AdminPage() {
-  return <AdminPanel />;
+  return <AdminShell />;
 }
