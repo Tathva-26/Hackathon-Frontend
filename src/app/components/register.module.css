@@ -433,6 +433,232 @@
   color: #777;
   font-size: 0.8rem;
 }
+/* Paid team dashboard: two columns on desktop (team details left, notice
+   board right); on mobile one column with the notices near the top. */
+.paidDashboard {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-areas:
+    "head board"
+    "details board"
+    "invite board"
+    "footer board";
+  grid-template-rows: auto auto auto 1fr;
+  column-gap: clamp(2.5rem, 5vw, 6rem);
+  align-items: start;
+  max-width: 82rem;
+  margin: 2rem auto 5rem;
+}
+.paidDashboard > .dashHead {
+  grid-area: head;
+}
+.paidDashboard > .orderDetails {
+  grid-area: details;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 0 2rem;
+}
+.paidDashboard > .inviteCard {
+  grid-area: invite;
+  margin: 0;
+}
+.paidDashboard > .noticeBoard {
+  grid-area: board;
+}
+.paidDashboard > .dashFooter {
+  grid-area: footer;
+}
+.paidDashboard .authTitle {
+  font-size: clamp(4rem, 7vw, 7rem);
+}
+.paidDashboard .dashHead .authCopy {
+  margin: 1.5rem 0 2rem;
+}
+/* Notice board: admin announcements, shown to paid teams only. */
+.noticeBoard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 38rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(12, 12, 12, 0.8);
+  box-shadow: 1rem 1rem 0 rgba(255, 255, 255, 0.04);
+}
+.noticeBoard .formHeader {
+  flex: none;
+  margin-bottom: 0;
+}
+/* The scrollbar sits in the board's right padding, clear of the text. */
+.noticeScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-right: -1.25rem;
+  padding-right: 1.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: #fff rgba(255, 255, 255, 0.1);
+}
+/* Safari and older Chromium, which ignore scrollbar-color. */
+.noticeScroll::-webkit-scrollbar {
+  width: 6px;
+}
+.noticeScroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+.noticeScroll::-webkit-scrollbar-thumb {
+  background: #fff;
+}
+/* Fade + button over the bottom of the list while more notices are below.
+   Inset by the board's padding, so it covers the list but not the scrollbar. */
+.noticeMoreHint {
+  position: absolute;
+  left: 2rem;
+  right: 2rem;
+  bottom: 2rem;
+  height: 5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: linear-gradient(to bottom, rgba(12, 12, 12, 0), rgba(12, 12, 12, 0.97) 70%);
+  pointer-events: none;
+}
+.noticeMoreHint button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  pointer-events: auto;
+  border: 1px solid #fff;
+  background: #fff;
+  color: #000;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font:
+    0.5rem "Press Start 2P",
+    monospace;
+  letter-spacing: 0.12em;
+  box-shadow: 0.35rem 0.35rem 0 rgba(255, 255, 255, 0.12);
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.noticeMoreHint button:hover {
+  background: #ddd;
+  transform: translateY(-2px);
+}
+.noticeMoreHint button span {
+  font-size: 0.7rem;
+  animation: noticeNudge 1.4s ease-in-out infinite;
+}
+@keyframes noticeNudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .noticeMoreHint button span {
+    animation: none;
+  }
+}
+.noticeScroll:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 4px;
+}
+.noticeList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.notice {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #262626;
+}
+.notice:last-child {
+  border-bottom: 0;
+  padding-bottom: 0.5rem;
+}
+.noticeStamp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  margin: 0;
+  color: #707070;
+  font:
+    0.5rem "Press Start 2P",
+    monospace;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+}
+.newBadge {
+  background: #fff;
+  color: #000;
+  font-weight: 400;
+  padding: 0.3rem 0.45rem;
+}
+.noticeTitle {
+  margin: 0.8rem 0 0;
+  color: #fff;
+  font:
+    600 1.05rem/1.4 "Inter",
+    sans-serif;
+  overflow-wrap: anywhere;
+}
+.noticeBody {
+  margin: 0.6rem 0 0;
+  color: #a0a0a0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.noticeBody a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.noticeClamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+}
+.textButton {
+  margin-top: 0.9rem;
+  padding: 0.25rem 0;
+  border: 0;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font:
+    0.5rem "Press Start 2P",
+    monospace;
+  letter-spacing: 0.12em;
+}
+.textButton:hover {
+  color: #fff;
+}
+.noticeEmpty {
+  margin: 1.5rem 0 0;
+  padding: 1.75rem 1rem;
+  border: 1px dashed #444;
+  color: #888;
+  text-align: center;
+  font:
+    0.55rem "Press Start 2P",
+    monospace;
+  letter-spacing: 0.12em;
+  line-height: 2;
+}
+.noticeEmpty p {
+  margin: 0;
+}
 @media (max-width: 800px) {
   .page {
     padding-top: 8rem;
@@ -459,6 +685,40 @@
   .authTitle,
   .successTitle {
     font-size: clamp(4rem, 18vw, 7rem);
+  }
+  .paidDashboard {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "head"
+      "board"
+      "invite"
+      "details"
+      "footer";
+    grid-template-rows: none;
+    row-gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .paidDashboard .authTitle {
+    font-size: clamp(3.25rem, 15vw, 5rem);
+  }
+  .paidDashboard .dashHead .authCopy {
+    margin: 1rem 0 0;
+  }
+  .paidDashboard > .orderDetails {
+    margin: 0;
+  }
+  .noticeBoard {
+    height: 30rem;
+    padding: 1.25rem;
+  }
+  .noticeScroll {
+    margin-right: -0.75rem;
+    padding-right: 0.75rem;
+  }
+  .noticeMoreHint {
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.25rem;
   }
 }
 @media (max-width: 480px) {

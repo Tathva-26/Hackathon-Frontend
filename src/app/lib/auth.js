@@ -124,3 +124,13 @@ export async function fetchPaymentStatus(bookingUid) {
   if (!res.ok) throw await readErrorEnvelope(res, "Could not check payment status.");
   return res.json();
 }
+
+// GET /api/v1/announcements - published notices, newest first. The backend
+// only answers for the leader of a paid team (401/403 otherwise).
+export async function fetchAnnouncements() {
+  const res = await fetch(`${getVersionedBase()}/announcements`, {
+    credentials: "include",
+  });
+  if (!res.ok) throw await readErrorEnvelope(res, "Could not load notices.");
+  return res.json();
+}
