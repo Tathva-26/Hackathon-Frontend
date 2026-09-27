@@ -33,8 +33,7 @@ export function WhatsAppInviteCard() {
       <p className={styles.eyebrow}>OFFICIAL WHATSAPP GROUP</p>
       <p className={styles.authCopy}>
         Event updates, schedules and announcements are shared in the TatHack
-        &apos;26 WhatsApp group. Join it, and share this link with your
-        teammates so they join too.
+        &apos;26 WhatsApp group.
       </p>
       <a
         href={WHATSAPP_GROUP_URL}
@@ -82,8 +81,7 @@ export function WhatsAppInvitePopup({ registrationId }) {
         </h2>
         <p className={styles.authCopy}>
           All event updates, schedules and announcements for TatHack &apos;26
-          are shared in the official WhatsApp group. Join now, and share the
-          link with your teammates.
+          are shared in the official WhatsApp group. 
         </p>
         <div className={styles.modalActions}>
           <a
