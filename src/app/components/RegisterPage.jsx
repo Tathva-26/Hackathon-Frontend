@@ -6,6 +6,7 @@ import styles from "./register.module.css";
 import { useAuth } from "./AuthProvider";
 import GoogleSignIn from "./GoogleSignIn";
 import { WhatsAppInviteCard, WhatsAppInvitePopup } from "./WhatsAppInvite";
+import NoticeBoard from "./NoticeBoard";
 import {
   fetchMyRegistration,
   getVersionedBase,
@@ -397,19 +398,26 @@ export default function RegisterPage() {
 
   if (regInfo.registered && !showEditor) {
     const reg = regInfo.data;
+    // A paid team gets the wider two-column dashboard with the notice board;
+    // the other states keep the single column.
+    const isPaid = reg.status === "PAID";
     return (
       <main className={styles.page}>
         <div className={styles.grid} />
-        <section className={styles.authPanel}>
-          <p className={styles.eyebrow}>TATHVA PRESENTS</p>
-          <h1 className={styles.authTitle}>
-            YOUR
-            <br />
-            <span>TEAM.</span>
-          </h1>
-          <p className={styles.authCopy}>
-            {"Here is your team dashboard."}
-          </p>
+        <section className={isPaid ? styles.paidDashboard : styles.authPanel}>
+          <div className={styles.dashHead}>
+            <p className={styles.eyebrow}>TATHVA PRESENTS</p>
+            <h1 className={styles.authTitle}>
+              YOUR
+              <br />
+              <span>TEAM.</span>
+            </h1>
+            <p className={styles.authCopy}>
+              {isPaid
+                ? "You're all set for TatHack '26. See you at the event!"
+                : "Here is your team dashboard."}
+            </p>
+          </div>
           <div className={styles.orderDetails}>
             <div>
               <span>TEAM</span>
@@ -494,11 +502,9 @@ export default function RegisterPage() {
             </>
           )}
 
-          {reg.status === "PAID" && (
+          {isPaid && (
             <>
-              <p className={styles.authCopy} style={{ margin: "0 0 1rem" }}>
-                You&apos;re all set for TatHack &apos;26. See you at the event!
-              </p>
+              <NoticeBoard registrationId={reg.registrationId} />
               <WhatsAppInviteCard />
               <WhatsAppInvitePopup registrationId={reg.registrationId} />
             </>
@@ -628,26 +634,28 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <div style={{ marginTop: 24 }}>
-            <button
-              type="button"
-              onClick={logout}
-              style={{
-                background: "transparent",
-                border: "1px solid #555",
-                color: "#aaa",
-                padding: "8px 12px",
-                cursor: "pointer",
-                fontSize: 11,
-                letterSpacing: 1,
-              }}
-            >
-              SIGN OUT ({currentUser.email})
-            </button>
+          <div className={styles.dashFooter}>
+            <div style={{ marginTop: 24 }}>
+              <button
+                type="button"
+                onClick={logout}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #555",
+                  color: "#aaa",
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                  fontSize: 11,
+                  letterSpacing: 1,
+                }}
+              >
+                SIGN OUT ({currentUser.email})
+              </button>
+            </div>
+            <Link href="/" className={styles.backLink}>
+              ← BACK TO HOME
+            </Link>
           </div>
-          <Link href="/" className={styles.backLink}>
-            ← BACK TO HOME
-          </Link>
         </section>
       </main>
     );
