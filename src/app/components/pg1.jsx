@@ -303,7 +303,7 @@ export default function Pg1() {
                 }}
               >
                 <span className="pre-reg-dot"></span>
-                <span>Registration Closes Soon!</span>
+                <span>Round 1 is live...!!</span>
               </div>
             </section>
           </main>
