@@ -281,7 +281,12 @@ export default function Pg1() {
             <img src="/assets/atom.png" className="decor decor-top-right" alt="" />
 
             <section className="hero-content">
-              <p className="presents" ref={presentsRef}>PRESENTS</p>
+              <div className="presents-group" ref={presentsRef}>
+                <span className="brototype-logo title-sponsor-logo">
+                  <img src="/assets/Brototype-Black%20Registered.png" alt="Brototype" />
+                </span>
+                <p className="presents">PRESENTS</p>
+              </div>
 
               <h1 className="title" ref={titleRef}>
                 <span>TatHack</span>

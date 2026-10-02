@@ -94,6 +94,7 @@ export default function Navbar({ variant } = {}) {
   // variant lets a caller force "home" or "inner" layout regardless of route
   const isHome = variant ? variant === "home" : pathname === "/";
   const isPrizesActive = pathname === "/prizes" || pathname === "/prize";
+  const isSponsorsActive = pathname === "/sponsors" || pathname === "/sponsor";
 
   if (pathname.startsWith("/admin")) return null;
 
@@ -115,7 +116,7 @@ export default function Navbar({ variant } = {}) {
         </Link>
         <nav className="nav-actions" aria-label="Event navigation">
           <Link href="/prizes">Prizes</Link>
-          <Link href="/#sponsors">Sponsors</Link>
+          <Link href="/sponsors">Sponsors</Link>
           {/* <Link href="/rules">Rules</Link> */}
           <Link href="/faq">FAQ</Link>
           <button className="signup-btn" onClick={handleSignup}>
@@ -144,7 +145,10 @@ export default function Navbar({ variant } = {}) {
         >
           Prizes
         </Link>
-        <Link href="/#sponsors" className="nav-link">
+        <Link
+          href="/sponsors"
+          className={isSponsorsActive ? "nav-link active" : "nav-link"}
+        >
           Sponsors
         </Link>
         {/* <Link

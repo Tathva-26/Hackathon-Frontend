@@ -286,12 +286,40 @@ body {
   padding-top: 40px;
 }
 
+.presents-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Brototype PNG has wide transparent padding — crop to the artwork */
+.brototype-logo {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3318 / 877;
+}
+
+.brototype-logo img {
+  display: block;
+  width: 115.73%;
+  max-width: none;
+  height: auto;
+  margin: -16.27% 0 0 -11.15%;
+}
+
+.title-sponsor-logo {
+  width: clamp(150px, 16vw, 230px);
+  margin-bottom: 16px;
+  /* black logo → white on the dark hero */
+  filter: invert(1);
+}
+
 .presents {
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.35em;
   color: #fff;
-  margin-bottom: 90px;
+  margin-bottom: 40px;
 }
 
 .title {
@@ -414,9 +442,13 @@ body {
     font-size: 14px;
   }
 
+  .title-sponsor-logo {
+    margin-bottom: 12px;
+  }
+
   .presents {
     font-size: 12px;
-    margin-bottom: 50px;
+    margin-bottom: 28px;
   }
 
   .title {
@@ -637,10 +669,15 @@ body {
     font-size: 12px;
   }
 
+  .title-sponsor-logo {
+    width: 120px;
+    margin-bottom: 8px;
+  }
+
   .presents {
     font-size: 10px;
     letter-spacing: 0.25em;
-    margin-bottom: 30px;
+    margin-bottom: 16px;
   }
 
   .title {
@@ -953,6 +990,29 @@ body {
   font-weight: 600;
   color: #ffffff;
   letter-spacing: 0.05em;
+}
+
+/* White tile so logos designed for light backgrounds stay legible */
+.sponsor-logo-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 240px;
+  height: 130px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.sponsor-logo-tile .brototype-logo {
+  width: 100%;
+}
+
+.sponsor-logo-img {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
 }
 
 .rules-list {
