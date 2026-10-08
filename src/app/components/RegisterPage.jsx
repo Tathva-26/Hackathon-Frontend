@@ -452,13 +452,10 @@ export default function RegisterPage() {
               <button
                 type="button"
                 className={styles.primaryButton}
-                disabled
-                style={{
-                  background: "#333",
-                  borderColor: "#333",
-                  color: "#777",
-                  cursor: "not-allowed",
-                  transform: "none",
+                onClick={() => {
+                  setPayError("");
+                  setDetailsConfirmed(false);
+                  setShowPayModal(true);
                 }}
               >
                 PAY NOW <span>↗</span>
