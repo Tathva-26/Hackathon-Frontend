@@ -52,7 +52,7 @@ export default function TimerPage() {
         {/* Event date pill */}
         <div className="timer-date-pill">
           <span className="timer-date-dot" />
-          <span>OCT 09 &nbsp;·&nbsp; NIT CALICUT</span>
+          <span>OCT 10 &nbsp;·&nbsp; NIT CALICUT</span>
         </div>
 
       </div>
